@@ -10,5 +10,14 @@ int main(int argc, char * arg[])
 		return -1;
 	}
 
+	//create a window 
+	SDL_Window * window = SDL_CreateWindow("SDL", //window title
+		SDL_WINDOWPOS_CENTERED, // x position centered
+		SDL_WINDOWPOS_CENTERED, //y position centered
+		640, //width in pixels 
+		480, //height in pixels 
+		0 //flags
+		);
+
     return 0;
 }
