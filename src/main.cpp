@@ -26,6 +26,16 @@ int main(int argc, char * arg[])
 	//game loop
 	while (run)
 	{
+		//while we still have events in the queue
+		while (SDL_PollEvent(&event))
+		{
+			//get event type
+			if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE)
+			{
+				//set our bool which controls the loop to false
+				run = false;
+			}
+		}
 
 	}
 
