@@ -1,5 +1,15 @@
 #include "Common.h"
 
+void render()
+{
+
+}
+
+void update()
+{
+
+}
+
 int main(int argc, char * arg[])
 {
 	bool run = true;
@@ -36,6 +46,9 @@ int main(int argc, char * arg[])
 				run = false;
 			}
 		}
+
+		update();
+		render();
 
 	}
 
