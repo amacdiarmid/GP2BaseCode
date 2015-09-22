@@ -39,5 +39,10 @@ int main(int argc, char * arg[])
 
 	}
 
+	//destroy window
+	SDL_DestroyWindow(window);
+	//destroy initalization 
+	SDL_Quit;
+
     return 0;
 }
