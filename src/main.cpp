@@ -6,8 +6,8 @@ struct Position
 	float x, y, z;
 };
 
-Position trianglePosRight = { 1.0f, 1.0f, -5.0f };
-Position trianglePosLeft = { -1.0f, 1.0f, -5.0f };
+Position trianglePosRight = { 1.0f, 0.0f, -5.0f };
+Position trianglePosLeft = { -1.0f, 0.0f, -5.0f };
 
 void render()
 {
@@ -93,6 +93,11 @@ int main(int argc, char * arg[])
 			{
 				//set our bool which controls the loop to false
 				run = false;
+			}
+			if (event.type == SDL_GetKeyFromScancode(SDL_SCANCODE_W));
+			{
+				trianglePosRight.y += 0.1f;
+				trianglePosLeft.y += 0.1f;
 			}
 		}
 
