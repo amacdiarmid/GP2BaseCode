@@ -1,6 +1,14 @@
 #include "Common.h"
 #include "Graphics.h"
 
+struct Position
+{
+	float x, y, z;
+};
+
+Position trianglePosRight = { 1.0f, 1.0f, -5.0f };
+Position trianglePosLeft = { -1.0f, 1.0f, -5.0f };
+
 void render()
 {
 	//set the clear colour background 
@@ -10,25 +18,30 @@ void render()
 
 	//switch to model view
 	glMatrixMode(GL_MODELVIEW);
+	
+	//right triangle 
 	//reset using the identity matrix 
 	glLoadIdentity();
-	//translate to -5 on z
-	glTranslatef(0.0f, 0.0f, -5.0f);
+	//translate to world pos
+	glTranslatef(trianglePosRight.x, trianglePosRight.y, trianglePosRight.z);
 	//begin drawing triangle 
-	//right triangle 
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.0f, 0.0f, 0.0f); //colour the vertices
-	glVertex3f(0.5f, 1.0f, 0.0f); //top point
-	glVertex3f(0.5f, -1.0f, 0.0f); //bottom left
-	glVertex3f(2.5f, -1.0f, 0.0f); //bottom right 
+	glVertex3f(-1.0f, 1.0f, 0.0f); //top point
+	glVertex3f(-1.0f, -1.0f, 0.0f); //bottom left
+	glVertex3f(1.0f, -1.0f, 0.0f); //bottom right 
 	glEnd();
 
 	//left triangle 
+	//reset using the identity matrix 
+	glLoadIdentity();
+	//translate to world pos
+	glTranslatef(trianglePosLeft.x, trianglePosLeft.y, trianglePosLeft.z);
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.0f, 0.0f, 1.0f); //colour the vertices
-	glVertex3f(-0.5f, 1.0f, 0.0f); //top point
-	glVertex3f(-2.5f, -1.0f, 0.0f); //bottom left
-	glVertex3f(-0.5f, -1.0f, 0.0f); //bottom right 
+	glVertex3f(1.0f, 1.0f, 0.0f); //top point
+	glVertex3f(-1.0f, -1.0f, 0.0f); //bottom left
+	glVertex3f(1.0f, -1.0f, 0.0f); //bottom right 
 	glEnd();
 }
 
