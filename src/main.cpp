@@ -18,7 +18,9 @@ void render()
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.0f, 0.0f, 0.0f); //colour the vertices
 	glVertex3f(1.0f, 1.0f, 0.0f); //top point
+	glColor3f(0.0f, 1.0f, 0.0f); //colour the vertices
 	glVertex3f(-1.0f, -1.0f, 0.0f); //bottom left
+	glColor3f(0.0f, 0.0f, 1.0f); //colour the vertices
 	glVertex3f(1.0f, -1.0f, 0.0f); //bottom right 
 	glEnd();
 }
