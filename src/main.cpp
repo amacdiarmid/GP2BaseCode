@@ -65,6 +65,9 @@ int main(int argc, char * arg[])
 
 	}
 
+	//clean up in reverse order
+	//destroy openGL
+	SDL_GL_DeleteContext(glcontext);
 	//destroy window
 	SDL_DestroyWindow(window);
 	//destroy initalization 
