@@ -7,7 +7,20 @@ void render()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
+	//switch to model view
+	glMatrixMode(GL_MODELVIEW);
+	//reset using the identity matrix 
+	glLoadIdentity();
+	//translate to -5 on z
+	glTranslatef(0.0f, 0.0f, -5.0f);
+	//begin drawing triangle 
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0f, 0.0f, 0.0f); //colour the vertices
+	glVertex3f(0.0f, 1.0f, 0.0f); //top point
+	glVertex3f(-1.0f, -1.0f, 0.0f); //bottom left
+	glVertex3f(1.0f, -1.0f, 0.0f); //bottom right 
+	glEnd();
 }
 
 void update()
