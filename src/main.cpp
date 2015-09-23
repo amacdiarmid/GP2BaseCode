@@ -19,19 +19,15 @@ void render()
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.0f, 0.0f, 0.0f); //colour the vertices
 	glVertex3f(0.5f, 1.0f, 0.0f); //top point
-	glColor3f(0.0f, 1.0f, 0.0f); //colour the vertices
 	glVertex3f(0.5f, -1.0f, 0.0f); //bottom left
-	glColor3f(0.0f, 0.0f, 1.0f); //colour the vertices
 	glVertex3f(2.5f, -1.0f, 0.0f); //bottom right 
 	glEnd();
 
 	//left triangle 
 	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f); //colour the vertices
-	glVertex3f(-0.5f, 1.0f, 0.0f); //top point
 	glColor3f(0.0f, 0.0f, 1.0f); //colour the vertices
+	glVertex3f(-0.5f, 1.0f, 0.0f); //top point
 	glVertex3f(-2.5f, -1.0f, 0.0f); //bottom left
-	glColor3f(0.0f, 1.0f, 0.0f); //colour the vertices
 	glVertex3f(-0.5f, -1.0f, 0.0f); //bottom right 
 	glEnd();
 }
