@@ -108,11 +108,20 @@ int main(int argc, char * arg[])
 				//set our bool which controls the loop to false
 				run = false;
 			}
-			if (event.type == SDL_GetKeyFromScancode(SDL_SCANCODE_W));
+			if (event.type == SDL_KEYDOWN);
 			{
-				trianglePosRight.y += 0.1f;
-				trianglePosLeft.y += 0.1f;
-				quadCenter.y += 0.1f;
+				if (event.key.keysym.sym == SDLK_w)
+				{
+					trianglePosRight.y += 0.1f;
+					trianglePosLeft.y += 0.1f;
+					quadCenter.y += 0.1f;
+				}
+				else if (event.key.keysym.sym == SDLK_s)
+				{
+					trianglePosRight.y -= 0.1f;
+					trianglePosLeft.y -= 0.1f;
+					quadCenter.y -= 0.1f;
+				}
 			}
 		}
 
