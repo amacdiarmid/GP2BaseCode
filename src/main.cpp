@@ -8,6 +8,7 @@ struct Position
 
 Position trianglePosRight = { 1.0f, 0.0f, -5.0f };
 Position trianglePosLeft = { -1.0f, 0.0f, -5.0f };
+Position quadCenter = { 0.0f, -1.0f, -5.0f };
 
 void render()
 {
@@ -18,6 +19,19 @@ void render()
 
 	//switch to model view
 	glMatrixMode(GL_MODELVIEW);
+
+	//center quad
+	//reset using identity matrix
+	glLoadIdentity();
+	//translate to world pos
+	glTranslatef(quadCenter.x, quadCenter.y, quadCenter.z);
+	glBegin(GL_QUADS);
+	glColor3f(0.0f, 1.0f, 0.0f); // colour the vertives 
+	glVertex3f(-1.0f, 1.0f, 0.0f); //top left 
+	glVertex3f(1.0f, 1.0f, 0.0f); //top right
+	glVertex3f(1.0f, -1.0f, 0.0f); //bottom right
+	glVertex3f(-1.0f, -1.0f, 0.0f); //bottom left 
+	glEnd();
 	
 	//right triangle 
 	//reset using the identity matrix 
@@ -98,6 +112,7 @@ int main(int argc, char * arg[])
 			{
 				trianglePosRight.y += 0.1f;
 				trianglePosLeft.y += 0.1f;
+				quadCenter.y += 0.1f;
 			}
 		}
 
