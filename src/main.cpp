@@ -1,9 +1,14 @@
 #include "Common.h"
 #include "Graphics.h"
+#include "Vertex.h"
 
-float verts[] = { 0.0f, 1.0f, 0.0f,		//top
-				-1.0f, -1.0f, 0.0f,		//bottom left
-				1.0f, -1.0f, 0.0f };	//bottom Right
+Vertex verts[] = {{0.0f, 1.0f, 0.0f,		//x,y,z
+				1.0f, 0.0f, 0.0f, 1.0f },	//r,g,b,a
+				{ -1.0f, -1.0f, 0.0f,		//x,y,x
+				0.0f, 1.0f, 0.0f, 1.0f },	//r,g,b,a
+				{ 1.0f, -1.0f, 0.0f,		//x,y,z
+				0.0f, 0.0f, 1.0f, 1.0f}};	//r,g,b,a
+
 GLuint VBO;
 
 void render()
@@ -15,28 +20,22 @@ void render()
 
 	//make the new VBO active. repeat here as a sanity check(may have changed since initialisation)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//establish its 3 coords per vertex with 0 stride(space between elements) in array and contain floating point numbers
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	//establish array contains vertices (normals, colours, textures, coors etc.)
+	//the 3 param is now filled out, the pipeline needs to know the size of each vertex
+	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), NULL);
+	//the last param basically says that the colours start 3 floats into each element of the array
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), (void**)(3 * sizeof(float)));
+	//establish array contains vertices and colours
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 
 	//switch to model view
 	glMatrixMode(GL_MODELVIEW);
 	//reset using the identity matrix 
 	glLoadIdentity();
 	//translate 
-	glTranslatef(-1.0f, -1.0f, -6.0f);
+	glTranslatef(0.0f, 0.0f, -6.0f);
 	//begin drawing triangle 
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts) / (3 * sizeof(float)));
-
-	glLoadIdentity();
-	//translate 
-	glTranslatef(1.0f, 1.0f, -6.0f);
-	//begin drawing triangle 
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts) / (3 * sizeof(float)));
-	
+	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts)/sizeof(Vertex));	
 }
 
 void update()

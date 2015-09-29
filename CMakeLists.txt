@@ -12,7 +12,8 @@ add_executable(GP2BaseCode
 				src/main.cpp 
 				src/Graphics.cpp
 				include/Common.h
-				include/Graphics.h )
+				include/Graphics.h
+				include/Vertex.h )
 include_directories(GP2BaseCode include/ 
 					${SDL2_INCLUDE_DIR}
 					${OPENGL_INCLUDE_DIRS}
