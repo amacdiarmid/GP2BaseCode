@@ -27,8 +27,15 @@ void render()
 	//translate 
 	glTranslatef(-1.0f, -1.0f, -6.0f);
 	//begin drawing triangle 
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts) / (3 * sizeof(float)));
 
+	glLoadIdentity();
+	//translate 
+	glTranslatef(1.0f, 1.0f, -6.0f);
+	//begin drawing triangle 
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts) / (3 * sizeof(float)));
 	
 }
 
