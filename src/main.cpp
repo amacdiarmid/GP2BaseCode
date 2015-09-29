@@ -2,12 +2,135 @@
 #include "Graphics.h"
 #include "Vertex.h"
 
-Vertex verts[] = {{0.0f, 1.0f, 0.0f,		//x,y,z
-				1.0f, 0.0f, 0.0f, 1.0f },	//r,g,b,a
-				{ -1.0f, -1.0f, 0.0f,		//x,y,x
-				0.0f, 1.0f, 0.0f, 1.0f },	//r,g,b,a
-				{ 1.0f, -1.0f, 0.0f,		//x,y,z
-				0.0f, 0.0f, 1.0f, 1.0f}};	//r,g,b,a
+Vertex verts[] = {
+	//front face
+	//tri 1
+	//top left
+		{ -0.5f, 0.5f, 0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom left
+		{ -0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom right
+		{ 0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//tri 2
+	//top right
+		{ 0.5f, 0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//top left
+		{ -0.5f, 0.5f, 0.5, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom right
+		{ 0.5f, -0.5, 0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//back face
+	//tri 1
+	//top left
+		{ -0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom left
+		{ -0.5f, -0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//bottom right
+		{0.5f, -0.5f, -0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//tri 2
+	//top right
+		{ 0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//top left
+		{ -0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom right
+		{ 0.5f, -0.5f, -0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//top face
+	//tri 1
+	//front left
+		{ -0.5f, 0.5f, 0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front right
+		{ 0.5f, 0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//back left
+		{ -0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//tri 2 
+	//back right
+		{ 0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//back left
+		{ -0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front right
+		{ 0.5f, 0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//bottom face 
+	//tri 1
+	//front left 
+		{ -0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front right 
+		{ 0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//back left
+		{ -0.5f, -0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//tri 2
+	//back right 
+		{ 0.5f, -0.5f, -0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//back left 
+		{ -0.5f, -0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//front right
+		{ 0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//right face
+	//tri 1
+	//front bottom 
+		{ 0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//front top
+		{ 0.5f, 0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//back bottom
+		{ 0.5f, -0.5f, -0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//tri 2 
+	//back top
+		{ 0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//back bottom 
+		{ 0.5f, -0.5f, -0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front top
+		{ 0.5f, 0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//left face
+	//tri 1
+	//front bottom
+		{ -0.5f, -0.5f, 0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front top
+		{ -0.5f, 0.5f, 0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//back bottom
+		{ -0.5f, -0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//tri 2
+	//back top
+		{ -0.5f, 0.5f, -0.5f, //x,y,z
+		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
+	//front top
+		{ -0.5f, 0.5f, 0.5f, //x,y,z
+		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
+	//back bottom
+		{ -0.5f, -0.5f, -0.5f, //x,y,z
+		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+
+};
 
 GLuint VBO;
 
@@ -32,8 +155,10 @@ void render()
 	glMatrixMode(GL_MODELVIEW);
 	//reset using the identity matrix 
 	glLoadIdentity();
+	//calculate the view matrix to see 3D stuff
+	gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
 	//translate 
-	glTranslatef(0.0f, 0.0f, -6.0f);
+	glTranslatef(2.0f, 1.0f, 0.0f);
 	//begin drawing triangle 
 	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts)/sizeof(Vertex));	
 }
