@@ -19,6 +19,7 @@ include_directories(GP2BaseCode include/
 					${GLEW_INCLUDE_DIRS} )
 target_link_libraries(GP2BaseCode 
 						${SDL2_LIBRARY}
+						${SDL2MAIN_LIBRARY}
 						${OPENGL_LIBRARIES}
 						${GLEW_LIBRARIES} )
 
