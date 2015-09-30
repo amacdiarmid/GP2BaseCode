@@ -3,136 +3,49 @@
 #include "Vertex.h"
 
 Vertex verts[] = {
-	//front face
-	//tri 1
-	//top left
-		{ -0.5f, 0.5f, 0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom left
-		{ -0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom right
-		{ 0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//tri 2
-	//top right
-		{ 0.5f, 0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//top left
-		{ -0.5f, 0.5f, 0.5, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom right
-		{ 0.5f, -0.5, 0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//back face
-	//tri 1
-	//top left
-		{ -0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom left
-		{ -0.5f, -0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//bottom right
-		{0.5f, -0.5f, -0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//tri 2
-	//top right
-		{ 0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//top left
-		{ -0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom right
-		{ 0.5f, -0.5f, -0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//top face
-	//tri 1
-	//front left
-		{ -0.5f, 0.5f, 0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front right
-		{ 0.5f, 0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//back left
-		{ -0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//tri 2 
-	//back right
-		{ 0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//back left
-		{ -0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front right
-		{ 0.5f, 0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//bottom face 
-	//tri 1
-	//front left 
-		{ -0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front right 
-		{ 0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//back left
-		{ -0.5f, -0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//tri 2
-	//back right 
-		{ 0.5f, -0.5f, -0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//back left 
-		{ -0.5f, -0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//front right
-		{ 0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//right face
-	//tri 1
-	//front bottom 
-		{ 0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//front top
-		{ 0.5f, 0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//back bottom
-		{ 0.5f, -0.5f, -0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//tri 2 
-	//back top
-		{ 0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//back bottom 
-		{ 0.5f, -0.5f, -0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front top
-		{ 0.5f, 0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//left face
-	//tri 1
-	//front bottom
-		{ -0.5f, -0.5f, 0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front top
-		{ -0.5f, 0.5f, 0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//back bottom
-		{ -0.5f, -0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
-	//tri 2
-	//back top
-		{ -0.5f, 0.5f, -0.5f, //x,y,z
-		0.0f, 1.0f, 0.0f, 1.0f }, //r,g,b,a
-	//front top
-		{ -0.5f, 0.5f, 0.5f, //x,y,z
-		1.0f, 0.0f, 0.0f, 1.0f }, //r,g,b,a
-	//back bottom
-		{ -0.5f, -0.5f, -0.5f, //x,y,z
-		0.0f, 0.0f, 1.0f, 1.0f }, //r,g,b,a
+	//front
+		{ -0.5f, 0.5f, 0.5f,
+		1.0f, 0.0f, 1.0f, 1.0f }, //top left
+		{ -0.5f, -0.5f, 0.5f,
+		1.0f, 1.0f, 0.0f, 1.0f }, //bottom left
+		{ 0.5f, -0.5f, 0.5f,
+		0.0f, 1.0f, 1.0f, 1.0f }, //bottom right
+		{ 0.5f, 0.5f, 0.5f,
+		1.0f, 0.0f, 1.0f, 1.0f }, //top right
+	//back
+		{ -0.5f, 0.5f, -0.5f,
+		1.0f, 0.0f, 1.0f, 1.0f }, //top left 
+		{ -0.5f, -0.5f, -0.5f,
+		1.0f, 1.0f, 0.0f, 1.0f }, //bottom left 
+		{ 0.5f, -0.5f, -0.5f,
+		0.0f, 0.5f, 0.5f, 0.5f }, //bottom right
+		{ 0.5f, 0.5f, -0.5f,
+		1.0f, 0.0f, 1.0f, 1.0f }, //top right 
+};
 
+GLuint indices[] = {
+	//front
+	0, 1, 2,
+	0, 3, 2,
+	//left
+	4, 5, 1,
+	4, 1, 0,
+	//right
+	3, 7, 2,
+	7, 6, 2,
+	//bottom
+	1, 5, 2,
+	6, 2, 5,
+	//top
+	4, 0, 7,
+	0, 7, 3,
+	//back
+	4, 5, 6,
+	4, 7, 6,
 };
 
 GLuint VBO;
+GLuint EBO;
 
 void render()
 {
@@ -143,6 +56,7 @@ void render()
 
 	//make the new VBO active. repeat here as a sanity check(may have changed since initialisation)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//the 3 param is now filled out, the pipeline needs to know the size of each vertex
 	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), NULL);
 	//the last param basically says that the colours start 3 floats into each element of the array
@@ -160,7 +74,7 @@ void render()
 	//translate 
 	glTranslatef(2.0f, 1.0f, 0.0f);
 	//begin drawing triangle 
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(verts)/sizeof(Vertex));	
+	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 }
 
 void update()
@@ -176,10 +90,18 @@ void initScene()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//copy vertex data to VBO
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+
+	//create buffer 
+	glGenBuffers(1, &EBO);
+	//make the EBO active
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//copy the index date to the ebo
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 void cleanUp()
 {
+	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 }
 
