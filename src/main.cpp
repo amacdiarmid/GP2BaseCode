@@ -75,6 +75,16 @@ void render()
 	glTranslatef(2.0f, 1.0f, 0.0f);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+
+	//reset using the identity matrix 
+	glLoadIdentity();
+	//calculate the view matrix to see 3D stuff
+	gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+	//translate 
+	glTranslatef(-2.0f, -1.0f, 0.0f);
+	//begin drawing triangle 
+	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+
 }
 
 void update()
