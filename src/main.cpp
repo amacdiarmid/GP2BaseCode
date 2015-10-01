@@ -8,6 +8,11 @@ struct Pos
 	float rotX, rotY, rotZ; //rotation
 };
 
+struct mousePos
+{
+	float x, y;
+};
+
 Vertex verts[] = {
 	//front
 		{ -0.5f, 0.5f, 0.5f,
@@ -56,6 +61,7 @@ Pos cube1 = { 1, 1, 0, 0, 0, 0};
 Pos cube2 = { -1, -1, 0, 0, 0, 0};
 Pos world = { 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f };
 Pos fixedPoint = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+mousePos mouPos = { 0.0f, 0.0f };
 
 void render()
 {
@@ -246,6 +252,42 @@ int main(int argc, char * arg[])
 					std::cout << "j" << std::endl;
 					world.x += -1;
 					fixedPoint.x += -1;
+				}
+			}
+			if (event.type = SDL_MOUSEMOTION)
+			{
+				std::cout << "mouseMove_";
+				//move mouse
+				if (event.motion.x > mouPos.x)
+				{
+					std::cout << "mouseUp" << std::endl;
+					fixedPoint.x += 0.1;
+					mouPos.x = event.motion.x;
+					mouPos.y = event.motion.y;
+				}
+				else if (event.motion.x < mouPos.x)
+				{
+					std::cout << "mouseDown" << std::endl;
+					fixedPoint.x += -0.1;
+					mouPos.x = event.motion.x;
+					mouPos.y = event.motion.y;
+
+				}
+				else if (event.motion.y > mouPos.y)
+				{
+					std::cout << "mouseRight" << std::endl;
+					fixedPoint.y += -0.1;
+					mouPos.x = event.motion.x;
+					mouPos.y = event.motion.y;
+
+				}
+				else if (event.motion.y < mouPos.y)
+				{
+					std::cout << "mouseLeft" << std::endl;
+					fixedPoint.y += 0.1;
+					mouPos.x = event.motion.x;
+					mouPos.y = event.motion.y;
+
 				}
 				//end 
 				else
