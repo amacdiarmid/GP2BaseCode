@@ -2,6 +2,12 @@
 #include "Graphics.h"
 #include "Vertex.h"
 
+struct Pos
+{
+	float x, y, z; //positon
+	float rotX, rotY, rotZ; //rotation
+};
+
 Vertex verts[] = {
 	//front
 		{ -0.5f, 0.5f, 0.5f,
@@ -46,6 +52,10 @@ GLuint indices[] = {
 
 GLuint VBO;
 GLuint EBO;
+Pos cube1 = { 1, 1, 0, 0, 0, 0};
+Pos cube2 = { -1, -1, 0, 0, 0, 0};
+Pos world = { 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f };
+Pos fixedPoint = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 void render()
 {
@@ -70,18 +80,24 @@ void render()
 	//reset using the identity matrix 
 	glLoadIdentity();
 	//calculate the view matrix to see 3D stuff
-	gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+	gluLookAt(world.x, world.y, world.z, fixedPoint.x, fixedPoint.y, fixedPoint.z, 0.0, 1.0, 0.0);
 	//translate 
-	glTranslatef(2.0f, 1.0f, 0.0f);
+	glTranslatef(cube1.x, cube1.y, cube1.z);
+	glRotatef(cube1.rotX, 1.0f, 0.0f, 0.0f);
+	glRotatef(cube1.rotY, 0.0f, 1.0f, 0.0f);
+	glRotatef(cube1.rotZ, 0.0f, 0.0f, 1.0f);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 
 	//reset using the identity matrix 
 	glLoadIdentity();
 	//calculate the view matrix to see 3D stuff
-	gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+	gluLookAt(world.x, world.y, world.z, fixedPoint.x, fixedPoint.y, fixedPoint.z, 0.0, 1.0, 0.0);
 	//translate 
-	glTranslatef(-2.0f, -1.0f, 0.0f);
+	glTranslatef(cube2.x, cube2.y, cube2.z);
+	glRotatef(cube2.rotX, 1.0f, 0.0f, 0.0f);
+	glRotatef(cube2.rotY, 0.0f, 1.0f, 0.0f);
+	glRotatef(cube2.rotZ, 0.0f, 0.0f, 1.0f);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 
@@ -160,6 +176,82 @@ int main(int argc, char * arg[])
 			{
 				//set our bool which controls the loop to false
 				run = false;
+			}
+			if (event.type == SDL_KEYDOWN)
+			{
+				std::cout << "keyDown_";
+				//move cube
+				if (event.key.keysym.sym == SDLK_UP)
+				{
+					std::cout << "up" << std::endl;
+					cube1.y += 0.01;
+				}
+				else if (event.key.keysym.sym == SDLK_DOWN)
+				{
+					std::cout << "down" << std::endl;
+					cube1.y -= 0.01;
+				}
+				else if (event.key.keysym.sym == SDLK_RIGHT)
+				{
+					std::cout << "right" << std::endl;
+					cube1.x += 0.01;
+				}
+				else if (event.key.keysym.sym == SDLK_LEFT)
+				{
+					std::cout << "left" << std::endl;
+					cube1.x -= 0.01;
+				}
+				//rotate cube
+				else if (event.key.keysym.sym == SDLK_w)
+				{
+					std::cout << "w" << std::endl;
+					cube2.rotX += -1;
+				}
+				else if (event.key.keysym.sym == SDLK_s)
+				{
+					std::cout << "s" << std::endl;
+					cube2.rotX += 1;
+				}
+				else if (event.key.keysym.sym == SDLK_d)
+				{
+					std::cout << "d" << std::endl;
+					cube2.rotY += 1;
+				}
+				else if (event.key.keysym.sym == SDLK_a)
+				{
+					std::cout << "a" << std::endl;
+					cube2.rotY += -1;
+				}
+				//move camera
+				else if (event.key.keysym.sym == SDLK_i)
+				{
+					std::cout << "i" << std::endl;
+					world.z += -1;
+					fixedPoint.z += -1;
+				}
+				else if (event.key.keysym.sym == SDLK_k)
+				{
+					std::cout << "k" << std::endl;
+					world.z += 1;
+					fixedPoint.z += 1;
+				}
+				else if (event.key.keysym.sym == SDLK_l)
+				{
+					std::cout << "l" << std::endl;
+					world.x += 1;
+					fixedPoint.x += 1;
+				}
+				else if (event.key.keysym.sym == SDLK_j)
+				{
+					std::cout << "j" << std::endl;
+					world.x += -1;
+					fixedPoint.x += -1;
+				}
+				//end 
+				else
+				{
+					std::cout << " " << std::endl;
+				}
 			}
 		}
 
