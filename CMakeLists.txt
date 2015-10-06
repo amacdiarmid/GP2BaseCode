@@ -11,9 +11,11 @@ find_package(GLEW REQUIRED)
 add_executable(GP2BaseCode 
 				src/main.cpp 
 				src/Graphics.cpp
+				src/Shader.cpp
 				include/Common.h
 				include/Graphics.h
-				include/Vertex.h )
+				include/Vertex.h
+				include/Shader.h )
 include_directories(GP2BaseCode include/ 
 					${SDL2_INCLUDE_DIR}
 					${OPENGL_INCLUDE_DIRS}
