@@ -53,26 +53,6 @@ void render()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//make the new VBO active. repeat here as a sanity check(may have changed since initialisation)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//the 3 param is now filled out, the pipeline needs to know the size of each vertex
-	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), NULL);
-	//the last param basically says that the colours start 3 floats into each element of the array
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), (void**)(3 * sizeof(float)));
-	//establish array contains vertices and colours
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	//switch to model view
-	glMatrixMode(GL_MODELVIEW);
-	//reset using the identity matrix 
-	glLoadIdentity();
-	//calculate the view matrix to see 3D stuff
-	gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
-	//translate 
-	glTranslatef(2.0f, 1.0f, 0.0f);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 }
@@ -117,6 +97,10 @@ int main(int argc, char * arg[])
 		return -1;
 	}
 
+	//ask for version 4.2 of openGL
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	//create a window 
 	SDL_Window * window = SDL_CreateWindow("SDL", //window title
 		SDL_WINDOWPOS_CENTERED, // x position centered
