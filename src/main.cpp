@@ -5,23 +5,23 @@
 
 Vertex verts[] = {
 	//front
-		{ -0.5f, 0.5f, 0.5f,
-		1.0f, 0.0f, 1.0f, 1.0f }, //top left
-		{ -0.5f, -0.5f, 0.5f,
-		1.0f, 1.0f, 0.0f, 1.0f }, //bottom left
-		{ 0.5f, -0.5f, 0.5f,
-		0.0f, 1.0f, 1.0f, 1.0f }, //bottom right
-		{ 0.5f, 0.5f, 0.5f,
-		1.0f, 0.0f, 1.0f, 1.0f }, //top right
+		{ vec3(-0.5f, 0.5f, 0.5f),
+		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top left
+		{ vec3(-0.5f, -0.5f, 0.5f),
+		vec4(1.0f, 1.0f, 0.0f, 1.0f) }, //bottom left
+		{ vec3(0.5f, -0.5f, 0.5f),
+		vec4(0.0f, 1.0f, 1.0f, 1.0f) }, //bottom right
+		{ vec3(0.5f, 0.5f, 0.5f),
+		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top right
 	//back
-		{ -0.5f, 0.5f, -0.5f,
-		1.0f, 0.0f, 1.0f, 1.0f }, //top left 
-		{ -0.5f, -0.5f, -0.5f,
-		1.0f, 1.0f, 0.0f, 1.0f }, //bottom left 
-		{ 0.5f, -0.5f, -0.5f,
-		0.0f, 0.5f, 0.5f, 0.5f }, //bottom right
-		{ 0.5f, 0.5f, -0.5f,
-		1.0f, 0.0f, 1.0f, 1.0f }, //top right 
+		{ vec3(-0.5f, 0.5f, -0.5f),
+		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top left 
+		{ vec3(-0.5f, -0.5f, -0.5f),
+		vec4(1.0f, 1.0f, 0.0f, 1.0f) }, //bottom left 
+		{ vec3(0.5f, -0.5f, -0.5f),
+		vec4(0.0f, 0.5f, 0.5f, 0.5f) }, //bottom right
+		{ vec3(0.5f, 0.5f, -0.5f),
+		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top right 
 };
 
 GLuint indices[] = {
@@ -50,6 +50,12 @@ GLuint EBO;
 GLuint VAO;
 GLuint shaderProgram = 0;
 
+//matrices
+mat4 viewMatrix;
+mat4 projMatrix;
+mat4 worldMatrix;
+mat4 MVPMatrix;
+
 void render()
 {
 	//set the clear colour background 
@@ -60,11 +66,16 @@ void render()
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 	glUseProgram(shaderProgram);
+	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
+	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
 }
 
 void update()
 {
-
+	projMatrix = perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
+	viewMatrix = lookAt(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
+	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
 }
 
 void initScene()
