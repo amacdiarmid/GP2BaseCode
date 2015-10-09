@@ -56,6 +56,9 @@ mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
 
+//colour
+vec4 uniColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
 void render()
 {
 	//set the clear colour background 
@@ -68,6 +71,9 @@ void render()
 	glUseProgram(shaderProgram);
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+
+	GLint colLocation = glGetUniformLocation(shaderProgram, "uniColour");
+	glUniform4fv(colLocation, 1, value_ptr(uniColour));
 }
 
 void update()
