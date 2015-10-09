@@ -47,6 +47,7 @@ GLuint indices[] = {
 
 GLuint VBO;
 GLuint EBO;
+GLuint VAO;
 GLuint shaderProgram = 0;
 
 void render()
@@ -55,6 +56,7 @@ void render()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindVertexArray(VBO);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 	glUseProgram(shaderProgram);
@@ -67,6 +69,10 @@ void update()
 
 void initScene()
 {
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
 	//create buffer
 	glGenBuffers(1, &VBO);
 	//make the VBO active
@@ -80,6 +86,12 @@ void initScene()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//copy the index date to the ebo
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//mising instruction
+	//tell the shader that 0 is the position element 
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+	//end of missing instruction 
 
 	GLuint vertexShaderProgram = 0;
 	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
@@ -106,6 +118,7 @@ void initScene()
 void cleanUp()
 {
 	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
 }
