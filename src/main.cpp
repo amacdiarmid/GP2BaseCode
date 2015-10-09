@@ -57,6 +57,7 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+	glUseProgram(shaderProgram);
 }
 
 void update()
@@ -98,6 +99,8 @@ void initScene()
 	//now we can delete the VS and FS programs 
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
+
+	glBindAttribLocation(shaderProgram, 0, "vertexPosition");
 }
 
 void cleanUp()
