@@ -47,6 +47,7 @@ GLuint indices[] = {
 
 GLuint VBO;
 GLuint EBO;
+GLuint shaderProgram = 0;
 
 void render()
 {
@@ -88,12 +89,22 @@ void initScene()
 	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
+
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShaderProgram);
+	glAttachShader(shaderProgram, fragmentShaderProgram);
+	glLinkProgram(shaderProgram);
+	checkForLinkErrors(shaderProgram);
+	//now we can delete the VS and FS programs 
+	glDeleteShader(vertexShaderProgram);
+	glDeleteShader(fragmentShaderProgram);
 }
 
 void cleanUp()
 {
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProgram);
 }
 
 int main(int argc, char * arg[])
