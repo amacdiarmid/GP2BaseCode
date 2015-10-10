@@ -56,8 +56,6 @@ mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
 
-//colour
-vec4 uniColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 void render()
 {
@@ -71,9 +69,6 @@ void render()
 	glUseProgram(shaderProgram);
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
-
-	GLint colLocation = glGetUniformLocation(shaderProgram, "uniColour");
-	glUniform4fv(colLocation, 1, value_ptr(uniColour));
 }
 
 void update()
@@ -108,15 +103,18 @@ void initScene()
 	//tell the shader that 0 is the position element 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
-	//end of missing instruction 
+	//end of missing instruction
+	//send the colour to the shader
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)sizeof(vec3));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleColourVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleColourFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -130,6 +128,8 @@ void initScene()
 	glDeleteShader(fragmentShaderProgram);
 
 	glBindAttribLocation(shaderProgram, 0, "vertexPosition");
+	glBindAttribLocation(shaderProgram, 1, "vertexColourOut");
+
 }
 
 void cleanUp()
