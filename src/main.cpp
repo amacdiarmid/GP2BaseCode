@@ -57,6 +57,8 @@ mat4 worldMatrix;
 mat4 MVPMatrix;
 
 vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
+vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
+vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
 
 void render()
@@ -79,7 +81,7 @@ void render()
 void update()
 {
 	projMatrix = perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
-	viewMatrix = lookAt(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	viewMatrix = lookAt(worldPoint, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
 	worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
 	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
 }
@@ -212,6 +214,26 @@ int main(int argc, char * arg[])
 			case SDLK_LEFT:
 				movementVec.x += -0.5f;
 				cout << "left arrow " << endl;
+				break;
+			case SDLK_w:
+				worldPoint.z += -1.0f;
+				lookAtPoint.z += -1.0f;
+				cout << "w key " << endl;
+				break;
+			case SDLK_s:
+				worldPoint.z += 1.0f;
+				lookAtPoint.z += 1.0f;
+				cout << "s key " << endl;
+				break;
+			case SDLK_a:
+				worldPoint.x += -1.0f;
+				lookAtPoint.x += -1.0f;
+				cout << "s key " << endl;
+				break;
+			case SDLK_d:
+				worldPoint.x += 1.0f;
+				lookAtPoint.x += 1.0f;
+				cout << "s key " << endl;
 				break;
 			default:
 				break;
