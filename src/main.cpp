@@ -56,6 +56,8 @@ mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
 
+vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
+
 
 void render()
 {
@@ -69,6 +71,9 @@ void render()
 	glUseProgram(shaderProgram);
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+	//set the postion
+	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
+	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
 }
 
 void update()
@@ -189,6 +194,27 @@ int main(int argc, char * arg[])
 			{
 				//set our bool which controls the loop to false
 				run = false;
+			}
+			switch (event.key.keysym.sym)
+			{
+			case SDLK_UP:
+				movementVec.y += 0.5;
+				cout << "up arrow " << endl;
+				break;
+			case SDLK_DOWN:
+				movementVec.y += -0.5f;
+				cout << "down arrow " << endl;
+				break;
+			case SDLK_RIGHT:
+				movementVec.x += 0.5f;
+				cout << "right arrow " << endl;
+				break;
+			case SDLK_LEFT:
+				movementVec.x += -0.5f;
+				cout << "left arrow " << endl;
+				break;
+			default:
+				break;
 			}
 		}
 
