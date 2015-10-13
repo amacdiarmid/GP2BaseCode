@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Vertex.h"
 #include "Shader.h"
+#include "Texture.h"
 
 Vertex verts[] = {
 	//front
