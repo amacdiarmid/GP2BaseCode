@@ -58,6 +58,7 @@ GLuint VBO;
 GLuint EBO;
 GLuint VAO;
 GLuint shaderProgram = 0;
+GLuint textureMap;
 
 //matrices
 mat4 viewMatrix;
@@ -97,6 +98,9 @@ void update()
 
 void initScene()
 {
+	//load texture & bind
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+	textureMap = loadTextureFromFile(texturePath);
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -151,6 +155,7 @@ void initScene()
 
 void cleanUp()
 {
+	glDeleteTextures(1, &textureMap);
 	glDeleteBuffers(1, &EBO);
 	glDeleteVertexArrays(1, &VBO);
 	glDeleteBuffers(1, &VBO);
