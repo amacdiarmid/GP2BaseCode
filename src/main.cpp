@@ -6,22 +6,30 @@
 Vertex verts[] = {
 	//front
 		{ vec3(-0.5f, 0.5f, 0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top left
+		vec4(1.0f, 0.0f, 1.0f, 1.0f),
+		vec2(0.0f, 0.0f) }, //top left
 		{ vec3(-0.5f, -0.5f, 0.5f),
-		vec4(1.0f, 1.0f, 0.0f, 1.0f) }, //bottom left
+		vec4(1.0f, 1.0f, 0.0f, 1.0f),
+		vec2(0.0f, 1.0f) }, //bottom left
 		{ vec3(0.5f, -0.5f, 0.5f),
-		vec4(0.0f, 1.0f, 1.0f, 1.0f) }, //bottom right
+		vec4(0.0f, 1.0f, 1.0f, 1.0f),
+		vec2(1.0f, 1.0f) }, //bottom right
 		{ vec3(0.5f, 0.5f, 0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top right
+		vec4(1.0f, 0.0f, 1.0f, 1.0f),
+		vec2(1.0f, 0.0f) }, //top right
 	//back
 		{ vec3(-0.5f, 0.5f, -0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top left 
+		vec4(1.0f, 0.0f, 1.0f, 1.0f),
+		vec2(0.0f, 0.0f) }, //top left 
 		{ vec3(-0.5f, -0.5f, -0.5f),
-		vec4(1.0f, 1.0f, 0.0f, 1.0f) }, //bottom left 
+		vec4(1.0f, 1.0f, 0.0f, 1.0f),
+		vec2(0.0f, 1.0f) }, //bottom left 
 		{ vec3(0.5f, -0.5f, -0.5f),
-		vec4(0.0f, 0.5f, 0.5f, 0.5f) }, //bottom right
+		vec4(0.0f, 0.5f, 0.5f, 0.5f),
+		vec2(1.0f, 1.0f) }, //bottom right
 		{ vec3(0.5f, 0.5f, -0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f) }, //top right 
+		vec4(1.0f, 0.0f, 1.0f, 1.0f),
+		vec2(1.0f, 0.0f) }, //top right 
 };
 
 GLuint indices[] = {
@@ -106,14 +114,15 @@ void initScene()
 	//copy the index date to the ebo
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	//mising instruction
 	//tell the shader that 0 is the position element 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
-	//end of missing instruction
 	//send the colour to the shader
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)sizeof(vec3));
+	//send the text coords
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)sizeof(vec3) + sizeof(vec4));
 
 	GLuint vertexShaderProgram = 0;
 	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleColourVS.glsl";
