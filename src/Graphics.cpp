@@ -4,6 +4,8 @@
 //function to initalise OpenGL
 void initOpenGL()
 {
+	glewExperimental = GL_TRUE;
+
 	//smopth shading
 	glShadeModel(GL_SMOOTH);
 
