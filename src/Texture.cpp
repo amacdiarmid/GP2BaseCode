@@ -27,7 +27,7 @@ GLuint convertSDLSurfaceToTexture(SDL_Surface* surface)
 		if (surface->format->Rmask == 0x000000ff)
 		{
 			textureFormat = GL_RGBA;
-			internalFormat = GL_RGB8;
+			internalFormat = GL_RGBA8;
 		}
 		else
 		{
@@ -37,7 +37,7 @@ GLuint convertSDLSurfaceToTexture(SDL_Surface* surface)
 	}
 	else if (nOfColours == 3)
 	{
-		if (surface->format->Rmask == 0x00000ff)
+		if (surface->format->Rmask == 0x000000ff)
 		{
 			textureFormat = GL_RGB;
 			internalFormat = GL_RGB8;

@@ -66,7 +66,9 @@ mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
 
+//move object
 vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
+//move camera 
 vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
@@ -77,15 +79,27 @@ void render()
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBindVertexArray(VBO);
-	//begin drawing triangle 
-	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+	
 	glUseProgram(shaderProgram);
+	
+	//get the uniform loaction for the MVP
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
-	//set the postion
+	
+	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
+	
+	//get the uniform for the texture coords
+	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
+	glUniform1i(texture0Location, 0);
+
+	glBindVertexArray(VAO);
+	//begin drawing triangle 
+	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+
 }
 
 void update()
@@ -99,7 +113,7 @@ void update()
 void initScene()
 {
 	//load texture & bind
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
 	textureMap = loadTextureFromFile(texturePath);
 
 	glBindTexture(GL_TEXTURE_2D, textureMap);
@@ -107,22 +121,24 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
+	//gen vertex array object
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	//create buffer
+	//create vertex buffer object
 	glGenBuffers(1, &VBO);
 	//make the VBO active
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//copy vertex data to VBO
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
-	//create buffer 
+	//create element buffer object 
 	glGenBuffers(1, &EBO);
 	//make the EBO active
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//copy the index date to the ebo
+	//copy the index date to the EBO
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//tell the shader that 0 is the position element 
@@ -136,36 +152,39 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)sizeof(vec3) + sizeof(vec4));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleColourVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleColourFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShaderProgram);
 	glAttachShader(shaderProgram, fragmentShaderProgram);
+
+	//link attributes 
+	glBindAttribLocation(shaderProgram, 0, "vertexPosition");
+	glBindAttribLocation(shaderProgram, 1, "vertexColour");
+	glBindAttribLocation(shaderProgram, 2, "vertexTexCoords");
+
 	glLinkProgram(shaderProgram);
 	checkForLinkErrors(shaderProgram);
 	//now we can delete the VS and FS programs 
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
 
-	glBindAttribLocation(shaderProgram, 0, "vertexPosition");
-	glBindAttribLocation(shaderProgram, 1, "vertexColourOut");
-
 }
 
 void cleanUp()
 {
 	glDeleteTextures(1, &textureMap);
-	glDeleteBuffers(1, &EBO);
-	glDeleteVertexArrays(1, &VBO);
-	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
+	glDeleteBuffers(1, &EBO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
 }
 
 int main(int argc, char * arg[])
@@ -225,46 +244,49 @@ int main(int argc, char * arg[])
 				//set our bool which controls the loop to false
 				run = false;
 			}
-			switch (event.key.keysym.sym)
+			if (event.type == SDL_KEYDOWN)
 			{
-			case SDLK_UP:
-				movementVec.y += 0.5;
-				cout << "up arrow " << endl;
-				break;
-			case SDLK_DOWN:
-				movementVec.y += -0.5f;
-				cout << "down arrow " << endl;
-				break;
-			case SDLK_RIGHT:
-				movementVec.x += 0.5f;
-				cout << "right arrow " << endl;
-				break;
-			case SDLK_LEFT:
-				movementVec.x += -0.5f;
-				cout << "left arrow " << endl;
-				break;
-			case SDLK_w:
-				worldPoint.z += -1.0f;
-				lookAtPoint.z += -1.0f;
-				cout << "w key " << endl;
-				break;
-			case SDLK_s:
-				worldPoint.z += 1.0f;
-				lookAtPoint.z += 1.0f;
-				cout << "s key " << endl;
-				break;
-			case SDLK_a:
-				worldPoint.x += -1.0f;
-				lookAtPoint.x += -1.0f;
-				cout << "s key " << endl;
-				break;
-			case SDLK_d:
-				worldPoint.x += 1.0f;
-				lookAtPoint.x += 1.0f;
-				cout << "s key " << endl;
-				break;
-			default:
-				break;
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_UP:
+					movementVec.y += 0.5;
+					cout << "up arrow " << endl;
+					break;
+				case SDLK_DOWN:
+					movementVec.y += -0.5f;
+					cout << "down arrow " << endl;
+					break;
+				case SDLK_RIGHT:
+					movementVec.x += 0.5f;
+					cout << "right arrow " << endl;
+					break;
+				case SDLK_LEFT:
+					movementVec.x += -0.5f;
+					cout << "left arrow " << endl;
+					break;
+				case SDLK_w:
+					worldPoint.z += -1.0f;
+					lookAtPoint.z += -1.0f;
+					cout << "w key " << endl;
+					break;
+				case SDLK_s:
+					worldPoint.z += 1.0f;
+					lookAtPoint.z += 1.0f;
+					cout << "s key " << endl;
+					break;
+				case SDLK_a:
+					worldPoint.x += -1.0f;
+					lookAtPoint.x += -1.0f;
+					cout << "s key " << endl;
+					break;
+				case SDLK_d:
+					worldPoint.x += 1.0f;
+					lookAtPoint.x += 1.0f;
+					cout << "s key " << endl;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 
