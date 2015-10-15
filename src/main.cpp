@@ -59,6 +59,7 @@ GLuint EBO;
 GLuint VAO;
 GLuint shaderProgram = 0;
 GLuint textureMap;
+GLuint fontTexture;
 
 //matrices
 mat4 viewMatrix;
@@ -80,6 +81,10 @@ void render()
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	//blend alpha channel
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glUseProgram(shaderProgram);
 	
 	//get the uniform loaction for the MVP
@@ -93,7 +98,7 @@ void render()
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureMap);
+	glBindTexture(GL_TEXTURE_2D, fontTexture);
 	glUniform1i(texture0Location, 0);
 
 	glBindVertexArray(VAO);
@@ -122,6 +127,16 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glGenerateMipmap(GL_TEXTURE_2D);
+	
+	//load font and bind 
+	string fontPath = ASSET_PATH + FONT_PATH + "/OratorStd.otf";
+	fontTexture = loadTextureFromFont(fontPath, 18, "Hello World");
+
+	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
 	//gen vertex array object
 	glGenVertexArrays(1, &VAO);
@@ -181,6 +196,7 @@ void initScene()
 void cleanUp()
 {
 	glDeleteTextures(1, &textureMap);
+	glDeleteTextures(1, &fontTexture);
 	glDeleteProgram(shaderProgram);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
@@ -199,11 +215,18 @@ int main(int argc, char * arg[])
 		return -1;
 	}
 
+	//init SDL image
 	int imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
 	int returnInitFlags = IMG_Init(imageInitFlags);
 	if (((returnInitFlags) & (imageInitFlags)) != imageInitFlags)
 	{
 		cout << "Error SDL_Image Init " << IMG_GetError() << endl;
+	}
+
+	//init SDL font
+	if (TTF_Init() == -1)
+	{
+		cout << "ERROR TTF_Init: " << TTF_GetError();
 	}
 
 	//ask for version 4.2 of openGL
@@ -309,6 +332,8 @@ int main(int argc, char * arg[])
 	SDL_DestroyWindow(window);
 	//destroy image Lib
 	IMG_Quit();
+	//destroy SDL font lib
+	TTF_Quit();
 	//destroy initalization 
 	SDL_Quit();
 

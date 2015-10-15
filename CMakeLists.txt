@@ -9,6 +9,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
 find_package(SDL2_Image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 add_executable(GP2BaseCode 
 				src/main.cpp 
@@ -25,13 +26,15 @@ include_directories(GP2BaseCode include/
 					${OPENGL_INCLUDE_DIRS}
 					${GLEW_INCLUDE_DIRS}
 					${GLM_INCLUDE_DIRS}
-					${SDL2IMAGE_INCLUDE_DIR} )
+					${SDL2IMAGE_INCLUDE_DIR}
+					${SDL2_TTF_INCLUDE_DIR} )
 target_link_libraries(GP2BaseCode 
 						${SDL2_LIBRARY}
 						${SDL2MAIN_LIBRARY}
 						${OPENGL_LIBRARIES}
 						${GLEW_LIBRARIES}
-						${SDL2IMAGE_LIBRARY} )
+						${SDL2IMAGE_LIBRARY}
+						${SDL2_TTF_LIBRARIES} )
 add_custom_command(TARGET GP2BaseCode POST_BUILD COMMAND
 					${CMAKE_COMMAND} -E copy_directory
 					${CMAKE_SOURCE_DIR}/assets
