@@ -72,6 +72,8 @@ vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
 //move camera 
 vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
+//uniform colour
+vec4 uniColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 
 void render()
@@ -94,10 +96,14 @@ void render()
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
+
+	GLint uniColourLocation = glGetUniformLocation(shaderProgram, "uniColour");
+	glUniform4fv(uniColourLocation, 1, value_ptr(uniColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
+	//this is to change the active texture 
 	glBindTexture(GL_TEXTURE_2D, fontTexture);
 	glUniform1i(texture0Location, 0);
 
@@ -172,7 +178,7 @@ void initScene()
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/fontFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
