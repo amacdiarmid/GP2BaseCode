@@ -96,16 +96,19 @@ void render()
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
-
-	GLint uniColourLocation = glGetUniformLocation(shaderProgram, "uniColour");
-	glUniform4fv(uniColourLocation, 1, value_ptr(uniColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
 	//this is to change the active texture 
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
 	glUniform1i(texture0Location, 0);
+
+	//get the unifor for the texture coodrs
+	GLint texture1Location = glGetUniformLocation(shaderProgram, "texture1");
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	glUniform1i(texture1Location, 1);
 
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
@@ -178,7 +181,7 @@ void initScene()
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/fontFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/multipleTexturesFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
