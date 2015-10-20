@@ -23,7 +23,8 @@ add_executable(GP2BaseCode
 				include/Vertex.h
 				include/Shader.h
 				include/Texture.h
-				include/FileSystem.h )
+				include/FileSystem.h
+				include/Mesh.h )
 include_directories(GP2BaseCode include/ 
 					${SDL2_INCLUDE_DIR}
 					${OPENGL_INCLUDE_DIRS}
