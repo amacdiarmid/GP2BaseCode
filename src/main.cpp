@@ -3,6 +3,7 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "FileSystem.h"`
 
 Vertex verts[] = {
 	//front
@@ -205,6 +206,8 @@ void cleanUp()
 
 int main(int argc, char * arg[])
 {
+	ChangeWorkingDirectory();
+	//controls the game loop 
 	bool run = true;
 
 	//init everything - SDL, if it is nonZero we have a problem
