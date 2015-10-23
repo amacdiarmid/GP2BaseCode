@@ -3,57 +3,9 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "FileSystem.h"`
-
-Vertex verts[] = {
-	//front
-		{ vec3(-0.5f, 0.5f, 0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f),
-		vec2(0.0f, 0.0f) }, //top left
-		{ vec3(-0.5f, -0.5f, 0.5f),
-		vec4(1.0f, 1.0f, 0.0f, 1.0f),
-		vec2(0.0f, 1.0f) }, //bottom left
-		{ vec3(0.5f, -0.5f, 0.5f),
-		vec4(0.0f, 1.0f, 1.0f, 1.0f),
-		vec2(1.0f, 1.0f) }, //bottom right
-		{ vec3(0.5f, 0.5f, 0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f),
-		vec2(1.0f, 0.0f) }, //top right
-	//back
-		{ vec3(-0.5f, 0.5f, -0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f),
-		vec2(0.0f, 0.0f) }, //top left 
-		{ vec3(-0.5f, -0.5f, -0.5f),
-		vec4(1.0f, 1.0f, 0.0f, 1.0f),
-		vec2(0.0f, 1.0f) }, //bottom left 
-		{ vec3(0.5f, -0.5f, -0.5f),
-		vec4(0.0f, 0.5f, 0.5f, 0.5f),
-		vec2(1.0f, 1.0f) }, //bottom right
-		{ vec3(0.5f, 0.5f, -0.5f),
-		vec4(1.0f, 0.0f, 1.0f, 1.0f),
-		vec2(1.0f, 0.0f) }, //top right 
-};
-
-GLuint indices[] = {
-	//front
-	0, 1, 2,
-	0, 3, 2,
-	//left
-	4, 5, 1,
-	4, 1, 0,
-	//right
-	3, 7, 2,
-	7, 6, 2,
-	//bottom
-	1, 5, 2,
-	6, 2, 5,
-	//top
-	4, 0, 7,
-	0, 7, 3,
-	//back
-	4, 5, 6,
-	4, 7, 6,
-};
+#include "Mesh.h"
+#include "FileSystem.h"
+#include "FBXLoader.h"
 
 GLuint VBO;
 GLuint EBO;
@@ -61,6 +13,8 @@ GLuint VAO;
 GLuint shaderProgram = 0;
 GLuint textureMap;
 GLuint fontTexture;
+
+MeshData currentMesh;
 
 //matrices
 mat4 viewMatrix;
@@ -104,8 +58,7 @@ void render()
 
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
-	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
-
+	glDrawElements(GL_TRIANGLES, currentMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
 }
 
 void update()
@@ -118,6 +71,7 @@ void update()
 
 void initScene()
 {
+	/*
 	//load texture & bind
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
 	textureMap = loadTextureFromFile(texturePath);
@@ -138,6 +92,11 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	*/
+
+	//load model
+	string modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
+	loadFBXFromFile(modelPath, &currentMesh);
 
 	//gen vertex array object
 	glGenVertexArrays(1, &VAO);
@@ -148,14 +107,14 @@ void initScene()
 	//make the VBO active
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//copy vertex data to VBO
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, currentMesh.getNumVerts()*sizeof(Vertex), &currentMesh.vertices[0], GL_STATIC_DRAW);
 
 	//create element buffer object 
 	glGenBuffers(1, &EBO);
 	//make the EBO active
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//copy the index date to the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh.getNumIndices()*sizeof(int), &currentMesh.indices[0], GL_STATIC_DRAW);
 
 	//tell the shader that 0 is the position element 
 	glEnableVertexAttribArray(0);
@@ -168,12 +127,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -303,12 +262,12 @@ int main(int argc, char * arg[])
 				case SDLK_a:
 					worldPoint.x += -1.0f;
 					lookAtPoint.x += -1.0f;
-					cout << "s key " << endl;
+					cout << "a key " << endl;
 					break;
 				case SDLK_d:
 					worldPoint.x += 1.0f;
 					lookAtPoint.x += 1.0f;
-					cout << "s key " << endl;
+					cout << "d key " << endl;
 					break;
 				default:
 					break;

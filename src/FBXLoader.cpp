@@ -115,7 +115,7 @@ bool loadFBXFromFile(const string& filename, MeshData *meshData)
 	FbxNode* iRootNode = iScene->GetRootNode();
 	if (iRootNode)
 	{
-		cout << "root node " << iRootNode->GetName() << endl;
+		cout << " root node " << iRootNode->GetName() << endl;
 		for (int i = 0; i < iRootNode->GetChildCount(); i++)
 		{
 			processNode(iRootNode->GetChild(i), meshData);
@@ -134,7 +134,7 @@ void processNode(FbxNode *node, MeshData *meshData)
 	FbxDouble3 rotation = node->LclRotation.Get();
 	FbxDouble3 scaling = node->LclScaling.Get();
 
-	cout << "node " << nodeName
+	cout << " node " << nodeName
 		<< " position " << translation[0] << " " << translation[1] << " " << translation[2] << " "
 		<< " rotation " << rotation[0] << " " << rotation[1] << " " << rotation[2] << " "
 		<< " scale " << scaling[0] << " " << scaling[1] << " " << scaling[2] << endl;
@@ -165,7 +165,7 @@ void processAttribute(FbxNodeAttribute *attribute, MeshData *meshData)
 	FbxString typeName = GetAttributeTypeName(attribute->GetAttributeType());
 	FbxString arrName = attribute->GetName();
 	PrintTabs();
-	cout << "attribute " << typeName.Buffer() << " name " << arrName << endl;
+	cout << " attribute " << typeName.Buffer() << " name " << arrName << endl;
 	switch (attribute->GetAttributeType())
 	{
 	case FbxNodeAttribute::eMesh:
