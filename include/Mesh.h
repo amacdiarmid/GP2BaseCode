@@ -4,7 +4,7 @@
 #include "Vertex.h"
 #include "Common.h"
 
-struct MyStruct
+struct MeshData
 {
 	vector<Vertex> vertices;
 	vector<int> indices; 
@@ -14,7 +14,7 @@ struct MyStruct
 		return vertices.size();
 	}
 
-	int getNumIndices)()
+	int getNumIndices()
 	{
 		return indices.size();
 	}

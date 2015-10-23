@@ -4,6 +4,9 @@ project (GP2BaseCode)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -ftest-coverage -fprofile-arcs")
 
+set(CMAKE_PREFIX_PATH "C:/Users/amacd_000/OneDrive/API/glew-1.12.0/include")
+set(CMAKE_LIBRARY_PATH "C:/Users/amacd_000/OneDrive/API/glew-1.12.0/lib/Release/x64")
+
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -18,13 +21,15 @@ add_executable(GP2BaseCode
 				src/Shader.cpp
 				src/Texture.cpp
 				src/FileSystem.cpp
+				src/FBXLoader.cpp
 				include/Common.h
 				include/Graphics.h
 				include/Vertex.h
 				include/Shader.h
 				include/Texture.h
 				include/FileSystem.h
-				include/Mesh.h )
+				include/Mesh.h
+				include/FBXLoader.h )
 include_directories(GP2BaseCode include/ 
 					${SDL2_INCLUDE_DIR}
 					${OPENGL_INCLUDE_DIRS}
