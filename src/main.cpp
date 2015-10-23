@@ -53,7 +53,7 @@ void render()
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
 	glUniform1i(texture0Location, 0);
 
 	glBindVertexArray(VAO);
@@ -71,9 +71,8 @@ void update()
 
 void initScene()
 {
-	/*
 	//load texture & bind
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/TextureMap.png";
 	textureMap = loadTextureFromFile(texturePath);
 
 	glBindTexture(GL_TEXTURE_2D, textureMap);
@@ -83,6 +82,7 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	
+	/*
 	//load font and bind 
 	string fontPath = ASSET_PATH + FONT_PATH + "/OratorStd.otf";
 	fontTexture = loadTextureFromFont(fontPath, 18, "Hello World");
@@ -127,12 +127,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
