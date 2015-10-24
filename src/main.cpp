@@ -7,14 +7,23 @@
 #include "FileSystem.h"
 #include "FBXLoader.h"
 
-GLuint VBO;
-GLuint EBO;
-GLuint VAO;
+GLuint carVBO;
+GLuint carEBO;
+GLuint carVAO;
+
+GLuint tankVBO;
+GLuint tankEBO;
+GLuint tankVAO;
+
 GLuint shaderProgram = 0;
-GLuint textureMap;
+
+GLuint carTexture;
+GLuint tankTexture;
+
 GLuint fontTexture;
 
-MeshData currentMesh;
+MeshData carMesh;
+MeshData tankMesh;
 
 //matrices
 mat4 viewMatrix;
@@ -23,11 +32,54 @@ mat4 worldMatrix;
 mat4 MVPMatrix;
 
 //move object
-vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
+vec3 movementCar = vec3(0.0f, 0.0f, 0.0f);
+vec3 movementTank = vec3(1.f, 1.0f, 1.0f);
 //move camera 
 vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
+void renderCar()
+{
+	//get the uniform loaction for the MVP
+	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
+	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+
+	//get the uniform for the movementVec
+	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
+	glUniform3fv(moveVecLocation, 1, value_ptr(movementCar));
+
+	//get the uniform for the texture coords
+	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, carTexture);
+	glUniform1i(texture0Location, 0);
+
+	glBindVertexArray(carVAO);
+	//begin drawing triangle 
+	glDrawElements(GL_TRIANGLES, carMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
+}
+
+void renderTank()
+{
+	//get the uniform loaction for the MVP
+	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
+	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+
+	//get the uniform for the movementVec
+	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
+	glUniform3fv(moveVecLocation, 1, value_ptr(movementTank));
+
+	//get the uniform for the texture coords
+	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tankTexture);
+	glUniform1i(texture0Location, 0);
+
+	glBindVertexArray(tankVAO);
+	//begin drawing triangle 
+	glDrawElements(GL_TRIANGLES, tankMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
+
+}
 
 void render()
 {
@@ -41,24 +93,11 @@ void render()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glUseProgram(shaderProgram);
-	
-	//get the uniform loaction for the MVP
-	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
-	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
-	
-	//get the uniform for the movementVec
-	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
-	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
-	
-	//get the uniform for the texture coords
-	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureMap);
-	glUniform1i(texture0Location, 0);
 
-	glBindVertexArray(VAO);
-	//begin drawing triangle 
-	glDrawElements(GL_TRIANGLES, currentMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
+	//renderCar();
+	//renderTank();
+
+	renderTank();
 }
 
 void update()
@@ -69,53 +108,83 @@ void update()
 	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
 }
 
-void initScene()
+void loadCar()
 {
 	//load texture & bind
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/TextureMap.png";
-	textureMap = loadTextureFromFile(texturePath);
+	carTexture = loadTextureFromFile(texturePath);
 
-	glBindTexture(GL_TEXTURE_2D, textureMap);
+	glBindTexture(GL_TEXTURE_2D, carTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	
-	/*
-	//load font and bind 
-	string fontPath = ASSET_PATH + FONT_PATH + "/OratorStd.otf";
-	fontTexture = loadTextureFromFont(fontPath, 18, "Hello World");
 
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	//load model
+	string modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
+	loadFBXFromFile(modelPath, &carMesh);
+
+	//gen vertex array object
+	glGenVertexArrays(1, &carVAO);
+	glBindVertexArray(carVAO);
+
+	//create vertex buffer object
+	glGenBuffers(1, &carVBO);
+	//make the VBO active
+	glBindBuffer(GL_ARRAY_BUFFER, carVBO);
+	//copy vertex data to VBO
+	glBufferData(GL_ARRAY_BUFFER, carMesh.getNumVerts()*sizeof(Vertex), &carMesh.vertices[0], GL_STATIC_DRAW);
+
+	//create element buffer object 
+	glGenBuffers(1, &carEBO);
+	//make the EBO active
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, carEBO);
+	//copy the index date to the EBO
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, carMesh.getNumIndices()*sizeof(int), &carMesh.indices[0], GL_STATIC_DRAW);
+}
+
+void loadTank()
+{
+	//load texture & bind
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/TextureTank.png";
+	tankTexture = loadTextureFromFile(texturePath);
+
+	glBindTexture(GL_TEXTURE_2D, tankTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	*/
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	//load model
-	string modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
-	loadFBXFromFile(modelPath, &currentMesh);
+	string modelPath = ASSET_PATH + MODEL_PATH + "/Tank1.fbx";
+	loadFBXFromFile(modelPath, &tankMesh);
 
 	//gen vertex array object
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	glGenVertexArrays(1, &tankVAO);
+	glBindVertexArray(tankVAO);
 
 	//create vertex buffer object
-	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &tankVBO);
 	//make the VBO active
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, tankVBO);
 	//copy vertex data to VBO
-	glBufferData(GL_ARRAY_BUFFER, currentMesh.getNumVerts()*sizeof(Vertex), &currentMesh.vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, tankMesh.getNumVerts()*sizeof(Vertex), &tankMesh.vertices[0], GL_STATIC_DRAW);
 
 	//create element buffer object 
-	glGenBuffers(1, &EBO);
+	glGenBuffers(1, &tankEBO);
 	//make the EBO active
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tankEBO);
 	//copy the index date to the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh.getNumIndices()*sizeof(int), &currentMesh.indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, tankMesh.getNumIndices()*sizeof(int), &tankMesh.indices[0], GL_STATIC_DRAW);
+}
 
+void initScene()
+{
+	loadCar();
+	loadTank();
+	
 	//tell the shader that 0 is the position element 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
@@ -155,12 +224,16 @@ void initScene()
 
 void cleanUp()
 {
-	glDeleteTextures(1, &textureMap);
+	glDeleteTextures(1, &carTexture);
+	glDeleteTextures(1, &tankTexture);
 	glDeleteTextures(1, &fontTexture);
 	glDeleteProgram(shaderProgram);
-	glDeleteBuffers(1, &EBO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &carEBO);
+	glDeleteBuffers(1, &carVBO);
+	glDeleteVertexArrays(1, &carVAO);
+	glDeleteBuffers(1, &tankEBO);
+	glDeleteBuffers(1, &tankVAO);
+	glDeleteVertexArrays(1, &carVAO);
 }
 
 int main(int argc, char * arg[])
@@ -234,19 +307,19 @@ int main(int argc, char * arg[])
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_UP:
-					movementVec.y += 0.5;
+					movementCar.y += 0.5;
 					cout << "up arrow " << endl;
 					break;
 				case SDLK_DOWN:
-					movementVec.y += -0.5f;
+					movementCar.y += -0.5f;
 					cout << "down arrow " << endl;
 					break;
 				case SDLK_RIGHT:
-					movementVec.x += 0.5f;
+					movementCar.x += 0.5f;
 					cout << "right arrow " << endl;
 					break;
 				case SDLK_LEFT:
-					movementVec.x += -0.5f;
+					movementCar.x += -0.5f;
 					cout << "left arrow " << endl;
 					break;
 				case SDLK_w:
