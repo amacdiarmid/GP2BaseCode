@@ -27,6 +27,9 @@ vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
 vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
+//ambient color
+vec4 ambientMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+vec4 ambientLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 void render()
 {
@@ -48,6 +51,14 @@ void render()
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
+
+	//get uniform for the amb light colout
+	GLint ALCLocation = glGetUniformLocation(shaderProgram, "ambientLightColour");
+	glUniform4fv(ALCLocation, 1, value_ptr(ambientLightColour));
+
+	//get uniform for the amb mat colour
+	GLint AMCLocation = glGetUniformLocation(shaderProgram, "ambientMaterialColour");
+	glUniform4fv(AMCLocation, 1, value_ptr(ambientMaterialColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
@@ -118,12 +129,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/ambientVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/ambientFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
