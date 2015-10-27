@@ -16,4 +16,5 @@ void main()
 {
 	float diffuseTerm = dot(worldNormal, lightDirection);
 	FragColor = (ambientMaterialColour*ambientLightColour)+(diffuseMaterialColour*diffuseLightColour*diffuseTerm);
+	//FragColor = (diffuseMaterialColour*diffuseLightColour*diffuseTerm);
 }

@@ -2,7 +2,6 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-
 out vec3 worldNormal;
 
 uniform mat4 MVP;

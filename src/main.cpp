@@ -20,6 +20,7 @@ mat4 viewMatrix;
 mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
+mat4 modelMatrix;
 
 //move object
 vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
@@ -27,9 +28,16 @@ vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
 vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
-//ambient color
+//light
+vec3 lightDirection = vec3(0.0f, 0.0f, 1.0f);
+
+//mat colour
 vec4 ambientMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+vec4 diffuseMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+
+//light colour
 vec4 ambientLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+vec4 diffuseLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 void render()
 {
@@ -47,18 +55,33 @@ void render()
 	//get the uniform loaction for the MVP
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+
+	//get the model matrix uniform
+	GLint modelLocation = glGetUniformLocation(shaderProgram, "Model");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, value_ptr(modelMatrix));
+
+	//get the light direction
+	GLint lightDirLocation = glGetUniformLocation(shaderProgram, "lightDirection");
+	glUniform3fv(lightDirLocation, 1, value_ptr(lightDirection));
 	
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
 
+	//get uniform for the amb mat colour
+	GLint AMCLocation = glGetUniformLocation(shaderProgram, "ambientMaterialColour");
+	glUniform4fv(AMCLocation, 1, value_ptr(ambientMaterialColour));
+
+	//get uniform for that dif mat col
+	GLint DMCLocation = glGetUniformLocation(shaderProgram, "diffuseMaterialColour");
+	glUniform4fv(DMCLocation, 1, value_ptr(diffuseMaterialColour));
+
 	//get uniform for the amb light colout
 	GLint ALCLocation = glGetUniformLocation(shaderProgram, "ambientLightColour");
 	glUniform4fv(ALCLocation, 1, value_ptr(ambientLightColour));
 
-	//get uniform for the amb mat colour
-	GLint AMCLocation = glGetUniformLocation(shaderProgram, "ambientMaterialColour");
-	glUniform4fv(AMCLocation, 1, value_ptr(ambientMaterialColour));
+	GLint DLClocation = glGetUniformLocation(shaderProgram, "diffuseLightColour");
+	glUniform4fv(DLClocation, 1, value_ptr(diffuseLightColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
@@ -77,6 +100,7 @@ void update()
 	viewMatrix = lookAt(worldPoint, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
 	worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
 	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
+	modelMatrix = worldMatrix;
 }
 
 void initScene()
@@ -127,14 +151,17 @@ void initScene()
 	//send the text coords
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
+	//send the normals to the buffer
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4) + sizeof(vec2)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/ambientVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/diffuseVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/ambientFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/diffuseFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -146,6 +173,7 @@ void initScene()
 	glBindAttribLocation(shaderProgram, 0, "vertexPosition");
 	glBindAttribLocation(shaderProgram, 1, "vertexColour");
 	glBindAttribLocation(shaderProgram, 2, "vertexTexCoords");
+	glBindAttribLocation(shaderProgram, 3, "vertexNormal");
 
 	glLinkProgram(shaderProgram);
 	checkForLinkErrors(shaderProgram);
