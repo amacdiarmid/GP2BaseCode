@@ -182,7 +182,7 @@ void processAttribute(FbxNodeAttribute *attribute, MeshData *meshData)
 void processMesh(FbxMesh *mesh, MeshData *meshData)
 {
 	int numVerts = mesh->GetControlPointsCount();
-	int numIndices = mesh->GetPolygonCount();
+	int numIndices = mesh->GetPolygonCount() * 3;
 
 	Vertex* pVerts = new Vertex[numVerts];
 	int *pIndices = mesh->GetPolygonVertices();
@@ -197,13 +197,14 @@ void processMesh(FbxMesh *mesh, MeshData *meshData)
 
 	processMeshTextureCoords(mesh, pVerts, numVerts);
 
+	uint initVertCount = meshData->vertices.size();
 	for (int i = 0; i < numVerts; i++)
 	{
 		meshData->vertices.push_back(pVerts[i]);
 	}
 	for (int i = 0; i < numIndices; i++)
 	{
-		meshData->indices.push_back(pIndices[i]);
+		meshData->indices.push_back(initVertCount + pIndices[i]);
 	}
 	cout << "vertices " << numVerts << " indices " << numIndices << endl;
 

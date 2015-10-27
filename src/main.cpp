@@ -14,7 +14,7 @@ GLuint shaderProgram = 0;
 GLuint textureMap;
 GLuint fontTexture;
 
-MeshData currentMesh;
+MeshData *currentMesh;
 
 //matrices
 mat4 viewMatrix;
@@ -53,12 +53,12 @@ void render()
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
+	glBindTexture(GL_TEXTURE_2D, textureMap);
 	glUniform1i(texture0Location, 0);
 
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
-	glDrawElements(GL_TRIANGLES, currentMesh.getNumIndices(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, currentMesh->getNumIndices(), GL_UNSIGNED_INT, 0);
 }
 
 void update()
@@ -71,9 +71,9 @@ void update()
 
 void initScene()
 {
-	/*
+	
 	//load texture & bind
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Tank1.png";
 	textureMap = loadTextureFromFile(texturePath);
 
 	glBindTexture(GL_TEXTURE_2D, textureMap);
@@ -83,6 +83,7 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	
+	/*
 	//load font and bind 
 	string fontPath = ASSET_PATH + FONT_PATH + "/OratorStd.otf";
 	fontTexture = loadTextureFromFont(fontPath, 18, "Hello World");
@@ -95,8 +96,10 @@ void initScene()
 	*/
 
 	//load model
-	string modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
-	loadFBXFromFile(modelPath, &currentMesh);
+	currentMesh = new MeshData();
+	string modelPath = ASSET_PATH + MODEL_PATH + "/Tank.fbx";
+	loadFBXFromFile(modelPath, currentMesh);
+	printf("%d %d\n", currentMesh->vertices.size(), currentMesh->indices.size());
 
 	//gen vertex array object
 	glGenVertexArrays(1, &VAO);
@@ -107,14 +110,14 @@ void initScene()
 	//make the VBO active
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//copy vertex data to VBO
-	glBufferData(GL_ARRAY_BUFFER, currentMesh.getNumVerts()*sizeof(Vertex), &currentMesh.vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, currentMesh->getNumVerts()*sizeof(Vertex), currentMesh->vertices.data(), GL_STATIC_DRAW);
 
 	//create element buffer object 
 	glGenBuffers(1, &EBO);
 	//make the EBO active
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//copy the index date to the EBO
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh.getNumIndices()*sizeof(int), &currentMesh.indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentMesh->getNumIndices()*sizeof(int), currentMesh->indices.data(), GL_STATIC_DRAW);
 
 	//tell the shader that 0 is the position element 
 	glEnableVertexAttribArray(0);
@@ -127,12 +130,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
