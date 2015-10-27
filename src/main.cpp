@@ -12,7 +12,6 @@ GLuint EBO;
 GLuint VAO;
 GLuint shaderProgram = 0;
 GLuint textureMap;
-GLuint fontTexture;
 
 MeshData *currentMesh;
 
@@ -73,7 +72,7 @@ void initScene()
 {
 	
 	//load texture & bind
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Tank1.png";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
 	textureMap = loadTextureFromFile(texturePath);
 
 	glBindTexture(GL_TEXTURE_2D, textureMap);
@@ -83,21 +82,10 @@ void initScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	
-	/*
-	//load font and bind 
-	string fontPath = ASSET_PATH + FONT_PATH + "/OratorStd.otf";
-	fontTexture = loadTextureFromFont(fontPath, 18, "Hello World");
-
-	glBindTexture(GL_TEXTURE_2D, fontTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	*/
 
 	//load model
 	currentMesh = new MeshData();
-	string modelPath = ASSET_PATH + MODEL_PATH + "/Tank.fbx";
+	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
 	loadFBXFromFile(modelPath, currentMesh);
 	printf("%d %d\n", currentMesh->vertices.size(), currentMesh->indices.size());
 
@@ -130,12 +118,12 @@ void initScene()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -159,7 +147,6 @@ void initScene()
 void cleanUp()
 {
 	glDeleteTextures(1, &textureMap);
-	glDeleteTextures(1, &fontTexture);
 	glDeleteProgram(shaderProgram);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);

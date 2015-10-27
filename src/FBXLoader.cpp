@@ -111,6 +111,10 @@ bool loadFBXFromFile(const string& filename, MeshData *meshData)
 	//import the contents of the file into the scene
 	iImporter->Import(iScene);
 
+	//force triangulation
+	FbxGeometryConverter iGeomConverter(ISdkManager);
+	iGeomConverter.Triangulate(iScene, /*replace*/ true);
+
 	//process node 
 	FbxNode* iRootNode = iScene->GetRootNode();
 	if (iRootNode)
@@ -182,6 +186,7 @@ void processAttribute(FbxNodeAttribute *attribute, MeshData *meshData)
 void processMesh(FbxMesh *mesh, MeshData *meshData)
 {
 	int numVerts = mesh->GetControlPointsCount();
+	//* by 3 fixes 1/3 of the indices going missing 
 	int numIndices = mesh->GetPolygonCount() * 3;
 
 	Vertex* pVerts = new Vertex[numVerts];
