@@ -20,10 +20,13 @@ mat4 viewMatrix;
 mat4 projMatrix;
 mat4 worldMatrix;
 mat4 MVPMatrix;
-mat4 modelMatrix;
 
 //move object
 vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
+//rotate object
+mat4 rotationMatrix;
+vec3 rotationAngle = vec3(0.0f, 0.0f, 0.0f);
+
 //move camera 
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
@@ -64,7 +67,7 @@ void render()
 
 	//get the model matrix uniform
 	GLint modelLocation = glGetUniformLocation(shaderProgram, "Model");
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, value_ptr(modelMatrix));
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, value_ptr(worldMatrix));
 
 	//get the light direction
 	GLint lightDirLocation = glGetUniformLocation(shaderProgram, "lightDirection");
@@ -114,11 +117,23 @@ void render()
 
 void update()
 {
+	rotationMatrix =
+		mat4(cos(rotationAngle.z), -sin(rotationAngle.z), 0, 0,
+		sin(rotationAngle.z), cos(rotationAngle.z), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1) *
+		mat4(cos(rotationAngle.y), 0, sin(rotationAngle.y), 0,
+		0, 1, 0, 0,
+		-sin(rotationAngle.y), 0, cos(rotationAngle.y), 0,
+		0, 0, 0, 1) *
+		mat4(1, 0, 0, 0,
+		0, cos(rotationAngle.x), -sin(rotationAngle.x), 0,
+		0, sin(rotationAngle.x), cos(rotationAngle.x), 0,
+		0, 0, 0, 1);
 	projMatrix = perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
 	viewMatrix = lookAt(cameraPosition, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
-	worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
-	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
-	modelMatrix = worldMatrix;
+	worldMatrix = translate(mat4(1.0f), vec3(1.0f, 1.0f, 1.0f));
+	MVPMatrix = projMatrix*viewMatrix*worldMatrix*rotationMatrix;
 }
 
 void initScene()
@@ -315,6 +330,30 @@ int main(int argc, char * arg[])
 					cameraPosition.x += 1.0f;
 					lookAtPoint.x += 1.0f;
 					cout << "d key " << endl;
+					break;
+				case SDLK_p:
+					rotationAngle.z += 1.0f;
+					cout << "p key " << endl;
+					break;
+				case SDLK_o:
+					rotationAngle.z += -1.0f;
+					cout << "o key " << endl;
+					break;
+				case SDLK_k:
+					rotationAngle.y += 1.0f;
+					cout << "k key " << endl;
+					break;
+				case SDLK_l:
+					rotationAngle.y += -1.0f;
+					cout << "l key " << endl;
+					break;
+				case SDLK_n:
+					rotationAngle.x += 1.0f;
+					cout << "n key " << endl;
+					break;
+				case SDLK_m:
+					rotationAngle.x += -1.0f;
+					cout << "M key " << endl;
 					break;
 				default:
 					break;
