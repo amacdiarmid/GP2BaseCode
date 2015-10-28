@@ -25,19 +25,25 @@ mat4 modelMatrix;
 //move object
 vec3 movementVec = vec3(0.0f, 0.0f, 0.0f);
 //move camera 
-vec3 worldPoint = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
 //light
 vec3 lightDirection = vec3(0.0f, 0.0f, 1.0f);
 
+//camera
+vec3 cameraPosition = vec3(0.0f, 0.0f, 10.0f);
+
 //mat colour
 vec4 ambientMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 vec4 diffuseMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+vec4 specularMaterialColour = vec4(0.3f, 0.3f, 0.3f, 1.0f);
+
+float specularPower = 1.0f;
 
 //light colour
 vec4 ambientLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 vec4 diffuseLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+vec4 specularLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 void render()
 {
@@ -76,12 +82,24 @@ void render()
 	GLint DMCLocation = glGetUniformLocation(shaderProgram, "diffuseMaterialColour");
 	glUniform4fv(DMCLocation, 1, value_ptr(diffuseMaterialColour));
 
+	//get the uniform for the spec mat colour
+	GLint SMCLocation = glGetUniformLocation(shaderProgram, "specularMaterialColour");
+	glUniform4fv(SMCLocation, 1, value_ptr(specularMaterialColour));
+
+	//get uniform for the specular power
+	GLint SpecPowerLocation = glGetUniformLocation(shaderProgram, "specularPower");
+	glUniform1f(specularPower, specularPower);
+
 	//get uniform for the amb light colout
 	GLint ALCLocation = glGetUniformLocation(shaderProgram, "ambientLightColour");
 	glUniform4fv(ALCLocation, 1, value_ptr(ambientLightColour));
 
 	GLint DLClocation = glGetUniformLocation(shaderProgram, "diffuseLightColour");
 	glUniform4fv(DLClocation, 1, value_ptr(diffuseLightColour));
+
+	//get the uniform for the spec light colour
+	GLint SLCLocation = glGetUniformLocation(shaderProgram, "specularLightColour");
+	glUniform4fv(SLCLocation, 1, value_ptr(specularLightColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
@@ -97,7 +115,7 @@ void render()
 void update()
 {
 	projMatrix = perspective(45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
-	viewMatrix = lookAt(worldPoint, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
+	viewMatrix = lookAt(cameraPosition, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
 	worldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
 	MVPMatrix = projMatrix*viewMatrix*worldMatrix;
 	modelMatrix = worldMatrix;
@@ -156,12 +174,12 @@ void initScene()
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(sizeof(vec3) + sizeof(vec4) + sizeof(vec2)));
 
 	GLuint vertexShaderProgram = 0;
-	string vsPath = ASSET_PATH + SHADER_PATH + "/diffuseVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
 	vertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/diffuseFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -279,22 +297,22 @@ int main(int argc, char * arg[])
 					cout << "left arrow " << endl;
 					break;
 				case SDLK_w:
-					worldPoint.z += -1.0f;
+					cameraPosition.z += -1.0f;
 					lookAtPoint.z += -1.0f;
 					cout << "w key " << endl;
 					break;
 				case SDLK_s:
-					worldPoint.z += 1.0f;
+					cameraPosition.z += 1.0f;
 					lookAtPoint.z += 1.0f;
 					cout << "s key " << endl;
 					break;
 				case SDLK_a:
-					worldPoint.x += -1.0f;
+					cameraPosition.x += -1.0f;
 					lookAtPoint.x += -1.0f;
 					cout << "a key " << endl;
 					break;
 				case SDLK_d:
-					worldPoint.x += 1.0f;
+					cameraPosition.x += 1.0f;
 					lookAtPoint.x += 1.0f;
 					cout << "d key " << endl;
 					break;
