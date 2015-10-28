@@ -135,7 +135,7 @@ void initScene()
 {
 	
 	//load texture & bind
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/Texture.png";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/skin.png";
 	textureMap = loadTextureFromFile(texturePath);
 
 	glBindTexture(GL_TEXTURE_2D, textureMap);

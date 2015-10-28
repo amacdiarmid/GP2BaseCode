@@ -2,9 +2,11 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec2 vertexTexCoords;
 
 out vec3 worldNormal;
 out vec3 cameraDirectionOut;
+out vec2 vertexTexCoordsOut;
 
 uniform mat4 MVP;
 uniform mat4 Model;
@@ -19,4 +21,5 @@ void main()
 	cameraDirectionOut = normalize(cameraPosition - worldPos);
 
 	gl_Position = MVP * vec4(vertexPosition + movementVec, 1.0);
+	vertexTexCoordsOut = vertexTexCoords;
 }
