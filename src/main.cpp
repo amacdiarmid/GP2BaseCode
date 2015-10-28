@@ -355,6 +355,30 @@ int main(int argc, char * arg[])
 					rotationAngle.x += -1.0f;
 					cout << "M key " << endl;
 					break;
+				case SDLK_KP_8:
+					lightDirection.y += 1.0f;
+					cout << "num 8 key " << endl;
+					break;
+				case SDLK_KP_2:
+					lightDirection.y += -1.0f;
+					cout << "num 2 key " << endl;
+					break;
+				case SDLK_KP_6:
+					lightDirection.x += 1.0f;
+					cout << "num 6 key " << endl;
+					break;
+				case SDLK_KP_4:
+					lightDirection.x += -1.0f;
+					cout << "num 4 key " << endl;
+					break;
+				case SDLK_KP_3:
+					lightDirection.z += 1.0f;
+					cout << "num 3 key " << endl;
+					break;
+				case SDLK_KP_1:
+					lightDirection.z += -1.0f;
+					cout << "num 1 key " << endl;
+					break;
 				default:
 					break;
 				}
