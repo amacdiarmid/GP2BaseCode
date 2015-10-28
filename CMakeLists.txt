@@ -29,7 +29,9 @@ add_executable(GP2BaseCode
 				include/Texture.h
 				include/FileSystem.h
 				include/Mesh.h
-				include/FBXLoader.h )
+				include/FBXLoader.h
+				include/Light.h
+				include/Material.h )
 include_directories(GP2BaseCode include/ 
 					${SDL2_INCLUDE_DIR}
 					${OPENGL_INCLUDE_DIRS}

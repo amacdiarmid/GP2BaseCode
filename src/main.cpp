@@ -6,6 +6,8 @@
 #include "Mesh.h"
 #include "FileSystem.h"
 #include "FBXLoader.h"
+#include "Material.h"
+#include "Light.h"
 
 GLuint VBO;
 GLuint EBO;
@@ -31,22 +33,15 @@ vec3 rotationAngle = vec3(0.0f, 0.0f, 0.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
 
 //light
-vec3 lightDirection = vec3(0.0f, 0.0f, 1.0f);
+LightData lightData;
+
+//material
+MaterialData materialData;
 
 //camera
 vec3 cameraPosition = vec3(0.0f, 0.0f, 10.0f);
 
-//mat colour
-vec4 ambientMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
-vec4 diffuseMaterialColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
-vec4 specularMaterialColour = vec4(0.3f, 0.3f, 0.3f, 1.0f);
-
 float specularPower = 1.0f;
-
-//light colour
-vec4 ambientLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-vec4 diffuseLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-vec4 specularLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 void render()
 {
@@ -71,7 +66,7 @@ void render()
 
 	//get the light direction
 	GLint lightDirLocation = glGetUniformLocation(shaderProgram, "lightDirection");
-	glUniform3fv(lightDirLocation, 1, value_ptr(lightDirection));
+	glUniform3fv(lightDirLocation, 1, value_ptr(lightData.direction));
 	
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
@@ -79,15 +74,15 @@ void render()
 
 	//get uniform for the amb mat colour
 	GLint AMCLocation = glGetUniformLocation(shaderProgram, "ambientMaterialColour");
-	glUniform4fv(AMCLocation, 1, value_ptr(ambientMaterialColour));
+	glUniform4fv(AMCLocation, 1, value_ptr(materialData.ambientColour));
 
 	//get uniform for that dif mat col
 	GLint DMCLocation = glGetUniformLocation(shaderProgram, "diffuseMaterialColour");
-	glUniform4fv(DMCLocation, 1, value_ptr(diffuseMaterialColour));
+	glUniform4fv(DMCLocation, 1, value_ptr(materialData.diffuseColour));
 
 	//get the uniform for the spec mat colour
 	GLint SMCLocation = glGetUniformLocation(shaderProgram, "specularMaterialColour");
-	glUniform4fv(SMCLocation, 1, value_ptr(specularMaterialColour));
+	glUniform4fv(SMCLocation, 1, value_ptr(materialData.specularColour));
 
 	//get uniform for the specular power
 	GLint SpecPowerLocation = glGetUniformLocation(shaderProgram, "specularPower");
@@ -95,14 +90,14 @@ void render()
 
 	//get uniform for the amb light colout
 	GLint ALCLocation = glGetUniformLocation(shaderProgram, "ambientLightColour");
-	glUniform4fv(ALCLocation, 1, value_ptr(ambientLightColour));
+	glUniform4fv(ALCLocation, 1, value_ptr(lightData.ambientColour));
 
 	GLint DLClocation = glGetUniformLocation(shaderProgram, "diffuseLightColour");
-	glUniform4fv(DLClocation, 1, value_ptr(diffuseLightColour));
+	glUniform4fv(DLClocation, 1, value_ptr(lightData.diffuseColour));
 
 	//get the uniform for the spec light colour
 	GLint SLCLocation = glGetUniformLocation(shaderProgram, "specularLightColour");
-	glUniform4fv(SLCLocation, 1, value_ptr(specularLightColour));
+	glUniform4fv(SLCLocation, 1, value_ptr(lightData.specularColour));
 	
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
@@ -214,6 +209,16 @@ void initScene()
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
 
+	//init material
+	lightData.direction = vec3(0.0f, 0.0f, 1.0f);
+	lightData.ambientColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	lightData.diffuseColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	lightData.specularColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//int light
+	materialData.ambientColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+	materialData.diffuseColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+	materialData.specularColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 }
 
 void cleanUp()
@@ -356,27 +361,27 @@ int main(int argc, char * arg[])
 					cout << "M key " << endl;
 					break;
 				case SDLK_KP_8:
-					lightDirection.y += 1.0f;
+					lightData.direction.y += 1.0f;
 					cout << "num 8 key " << endl;
 					break;
 				case SDLK_KP_2:
-					lightDirection.y += -1.0f;
+					lightData.direction.y += -1.0f;
 					cout << "num 2 key " << endl;
 					break;
 				case SDLK_KP_6:
-					lightDirection.x += 1.0f;
+					lightData.direction.x += 1.0f;
 					cout << "num 6 key " << endl;
 					break;
 				case SDLK_KP_4:
-					lightDirection.x += -1.0f;
+					lightData.direction.x += -1.0f;
 					cout << "num 4 key " << endl;
 					break;
 				case SDLK_KP_3:
-					lightDirection.z += 1.0f;
+					lightData.direction.z += 1.0f;
 					cout << "num 3 key " << endl;
 					break;
 				case SDLK_KP_1:
-					lightDirection.z += -1.0f;
+					lightData.direction.z += -1.0f;
 					cout << "num 1 key " << endl;
 					break;
 				default:
