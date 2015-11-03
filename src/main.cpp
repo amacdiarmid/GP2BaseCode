@@ -76,6 +76,34 @@ void createFullscreenQuad()
 	//enable vertex attribute array
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float), (void**)2);
+
+	//load and compile VS
+	GLuint fullScreenVertexShaderProgram = 0;
+	string vsPath = ASSET_PATH + SHADER_PATH + "/simplePostProcessVS.glsl";
+	fullScreenVertexShaderProgram = loadShaderFromFile(vsPath, VERTEX_SHADER);
+	checkForCompilerErrors(fullScreenVertexShaderProgram);
+
+	//load and compile FS
+	GLuint fullScreenFragmentShaderProgram = 0;
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simplePostProcessFS.glsl";
+	fullScreenFragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
+	checkForCompilerErrors(fullScreenFragmentShaderProgram);
+
+	//create shader
+	fullScreenShaderProgram = glCreateProgram();
+	glAttachShader(fullScreenShaderProgram, fullScreenVertexShaderProgram);
+	glAttachShader(fullScreenShaderProgram, fullScreenFragmentShaderProgram);
+
+	//bind the attribute locations 
+	glBindAttribLocation(fullScreenShaderProgram, 0, "vertexPosition");
+
+	//link and check for errors
+	glLinkProgram(fullScreenShaderProgram);
+	checkForLinkErrors(fullScreenShaderProgram);
+
+	//delete shaders
+	glDeleteShader(fullScreenFragmentShaderProgram);
+	glDeleteShader(fullScreenVertexShaderProgram);
 }
 
 void createFrameBuffer()
@@ -181,6 +209,7 @@ void render()
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, currentMesh->getNumIndices(), GL_UNSIGNED_INT, 0);
+
 }
 
 void update()
