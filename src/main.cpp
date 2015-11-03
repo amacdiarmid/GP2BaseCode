@@ -62,6 +62,44 @@ GLuint fullScreenShaderProgram;
 const int FRAME_BUFFER_WIDTH = 640;
 const int FRAME_BUFFER_HEIGHT = 480;
 
+void createFrameBuffer()
+{
+	//create texture
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &FBOTexture);
+	glBindTexture(GL_TEXTURE_2D, FBOTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT,
+		0, GL_RGBA,
+		GL_UNSIGNED_BYTE, NULL);
+
+	//depth buffer
+	glGenRenderbuffers(1, &FBODepthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, FBODepthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32,
+		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	//framebuffer object
+	glGenFramebuffers(1, &frameBufferObject);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, FBOTexture, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+		GL_RENDERBUFFER, FBODepthBuffer);
+
+	//error checking
+	GLenum status;
+	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		cout << "issue with Framebuffers" << endl;
+	}
+}
+
 void createFullscreenQuad()
 {
 	//gen and bind a VAO
@@ -106,42 +144,14 @@ void createFullscreenQuad()
 	glDeleteShader(fullScreenVertexShaderProgram);
 }
 
-void createFrameBuffer()
+void cleanUpFramebuffer()
 {
-	//create texture
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &FBOTexture);
-	glBindTexture(GL_TEXTURE_2D, FBOTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT,
-		0, GL_RGBA,
-		GL_UNSIGNED_BYTE, NULL);
-
-	//depth buffer
-	glGenRenderbuffers(1, &FBODepthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, FBODepthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32,
-		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	//framebuffer object
-	glGenFramebuffers(1, &frameBufferObject);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		GL_TEXTURE_2D, FBOTexture, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-		GL_RENDERBUFFER, FBODepthBuffer);
-
-	//error checking
-	GLenum status;
-	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		cout << "issue with Framebuffers" << endl;
-	}
+	glDeleteProgram(fullScreenShaderProgram);
+	glDeleteBuffers(1, &fullscreenVBO);
+	glDeleteVertexArrays(1, &fullscreenVAO);
+	glDeleteFramebuffers(1, &frameBufferObject);
+	glDeleteRenderbuffers(1, &FBODepthBuffer);
+	glDeleteTextures(1, &FBOTexture);
 }
 
 void render()
@@ -209,7 +219,6 @@ void render()
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, currentMesh->getNumIndices(), GL_UNSIGNED_INT, 0);
-
 }
 
 void update()
