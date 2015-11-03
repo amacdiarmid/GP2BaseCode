@@ -138,7 +138,7 @@ void createFullscreenQuad()
 	//link and check for errors
 	glLinkProgram(fullScreenShaderProgram);
 	checkForLinkErrors(fullScreenShaderProgram);
-
+	
 	//delete shaders
 	glDeleteShader(fullScreenFragmentShaderProgram);
 	glDeleteShader(fullScreenVertexShaderProgram);
@@ -154,19 +154,21 @@ void cleanUpFramebuffer()
 	glDeleteTextures(1, &FBOTexture);
 }
 
-void render()
+void renderScene()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	//set the clear colour background 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//clear the color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	//blend alpha channel
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glUseProgram(shaderProgram);
-	
+
 	//get the uniform loaction for the MVP
 	GLint MVPLocation = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
@@ -178,7 +180,7 @@ void render()
 	//get the light direction
 	GLint lightDirLocation = glGetUniformLocation(shaderProgram, "lightDirection");
 	glUniform3fv(lightDirLocation, 1, value_ptr(lightData.direction));
-	
+
 	//get the uniform for the movementVec
 	GLint moveVecLocation = glGetUniformLocation(shaderProgram, "movementVec");
 	glUniform3fv(moveVecLocation, 1, value_ptr(movementVec));
@@ -209,7 +211,7 @@ void render()
 	//get the uniform for the spec light colour
 	GLint SLCLocation = glGetUniformLocation(shaderProgram, "specularLightColour");
 	glUniform4fv(SLCLocation, 1, value_ptr(lightData.specularColour));
-	
+
 	//get the uniform for the texture coords
 	GLint texture0Location = glGetUniformLocation(shaderProgram, "texture0");
 	glActiveTexture(GL_TEXTURE0);
@@ -219,6 +221,12 @@ void render()
 	glBindVertexArray(VAO);
 	//begin drawing triangle 
 	glDrawElements(GL_TRIANGLES, currentMesh->getNumIndices(), GL_UNSIGNED_INT, 0);
+
+}
+
+void render()
+{
+	renderScene();
 }
 
 void update()
