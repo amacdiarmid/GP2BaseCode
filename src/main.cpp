@@ -9,6 +9,14 @@
 #include "Material.h"
 #include "Light.h"
 
+float vertices[]
+{
+	-1, -1,
+	1, -1,
+	-1, 1,
+	1, 1,
+};
+
 GLuint VBO;
 GLuint EBO;
 GLuint VAO;
@@ -53,6 +61,22 @@ GLuint fullScreenShaderProgram;
 
 const int FRAME_BUFFER_WIDTH = 640;
 const int FRAME_BUFFER_HEIGHT = 480;
+
+void createFullscreenQuad()
+{
+	//gen and bind a VAO
+	glGenVertexArrays(1, &fullscreenVAO);
+	glBindVertexArray(fullscreenVAO);
+
+	//gen, bind and fill VBO
+	glGenBuffers(1, &fullscreenVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, fullscreenVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float), vertices, GL_STATIC_DRAW);
+
+	//enable vertex attribute array
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float), (void**)2);
+}
 
 void createFrameBuffer()
 {
@@ -259,7 +283,8 @@ void initScene()
 	materialData.diffuseColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 	materialData.specularColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 
-	//createFrameBuffer();
+	createFrameBuffer();
+	createFullscreenQuad();
 }
 
 void cleanUp()
@@ -284,7 +309,6 @@ int main(int argc, char * arg[])
 
 		return -1;
 	}
-
 	//init SDL image
 	int imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
 	int returnInitFlags = IMG_Init(imageInitFlags);
