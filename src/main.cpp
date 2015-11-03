@@ -54,6 +54,44 @@ GLuint fullScreenShaderProgram;
 const int FRAME_BUFFER_WIDTH = 640;
 const int FRAME_BUFFER_HEIGHT = 480;
 
+void createFrameBuffer()
+{
+	//create texture
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &FBOTexture);
+	glBindTexture(GL_TEXTURE_2D, FBOTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT,
+		0, GL_RGBA,
+		GL_UNSIGNED_BYTE, NULL);
+
+	//depth buffer
+	glGenRenderbuffers(1, &FBODepthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, FBODepthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32,
+		FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	//framebuffer object
+	glGenFramebuffers(1, &frameBufferObject);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		GL_TEXTURE_2D, FBOTexture, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+		GL_RENDERBUFFER, FBODepthBuffer);
+
+	//error checking
+	GLenum status;
+	if ((status = glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		cout << "issue with Framebuffers" << endl;
+	}
+}
+
 void render()
 {
 	//set the clear colour background 
@@ -123,22 +161,12 @@ void render()
 
 void update()
 {
-	rotationMatrix =
-		mat4(cos(rotationAngle.z), -sin(rotationAngle.z), 0, 0,
-		sin(rotationAngle.z), cos(rotationAngle.z), 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1) *
-		mat4(cos(rotationAngle.y), 0, sin(rotationAngle.y), 0,
-		0, 1, 0, 0,
-		-sin(rotationAngle.y), 0, cos(rotationAngle.y), 0,
-		0, 0, 0, 1) *
-		mat4(1, 0, 0, 0,
-		0, cos(rotationAngle.x), -sin(rotationAngle.x), 0,
-		0, sin(rotationAngle.x), cos(rotationAngle.x), 0,
-		0, 0, 0, 1);
 	projMatrix = perspective(45.0f, (float)(FRAME_BUFFER_WIDTH / FRAME_BUFFER_HEIGHT), 0.1f, 100.0f);
 	viewMatrix = lookAt(cameraPosition, lookAtPoint, vec3(0.0f, 1.0f, 0.0f));
 	worldMatrix = translate(mat4(1.0f), vec3(1.0f, 1.0f, 1.0f));
+	worldMatrix = rotate(worldMatrix, radians(rotationAngle.x), vec3(1, 0, 0));
+	worldMatrix = rotate(worldMatrix, radians(rotationAngle.y), vec3(0, 1, 0));
+	worldMatrix = rotate(worldMatrix, radians(rotationAngle.z), vec3(0, 0, 1));
 	MVPMatrix = projMatrix*viewMatrix*worldMatrix*rotationMatrix;
 }
 
@@ -230,6 +258,8 @@ void initScene()
 	materialData.ambientColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 	materialData.diffuseColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
 	materialData.specularColour = vec4(0.3f, 0.3f, 0.3, 1.0f);
+
+	//createFrameBuffer();
 }
 
 void cleanUp()
