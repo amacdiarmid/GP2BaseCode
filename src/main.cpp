@@ -156,7 +156,7 @@ void cleanUpFramebuffer()
 
 void renderScene()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, fullscreenVBO);
 
 	//set the clear colour background 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -224,9 +224,28 @@ void renderScene()
 
 }
 
+void renderPostProcessing()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	glUseProgram(fullScreenShaderProgram);
+
+	GLint FSTexLoc = glGetUniformLocation(fullScreenShaderProgram, "texture0");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, FBOTexture);
+	glUniform1i(FSTexLoc, 0);
+
+	glBindVertexArray(fullscreenVAO);
+
+	glDrawElements(GL_TRIANGLE_STRIP, sizeof(vertices), 0, (void**)(4));
+}
+
 void render()
 {
 	renderScene();
+	renderPostProcessing();
 }
 
 void update()
